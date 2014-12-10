@@ -1,0 +1,4 @@
+{
+	/* block comment */
+	a: 1 // line comment
+}
