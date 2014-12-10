@@ -1,11 +1,10 @@
 'use strict';
 
-var libmodule = 'resolve/freeze',
+var libmodule = 'freeze',
 	freeze = requireLib(libmodule),
 	expect = require('chai').expect;
 
 describe(libmodule + ' test:', function() {
-
 
 	function checkCrudOnObject(name, freezed) {
 

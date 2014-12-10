@@ -55,15 +55,6 @@ describe(libmodule + ' test:', function() {
 		});
 	});
 
-	it('should freeze the result', function() {
-		process.env.CONFIG_LOADER_TEST_VAR = 'cofig-loader-test-var';
-		var config = { a: '%{CONFIG_LOADER_TEST_VAR}' },
-			resolved = resolve(config, opts);
-		expect(function() {
-			resolved.x = 999;
-		}).to.throw();
-	});
-
 	it('should not resolve env variables', function() {
 		process.env.CONFIG_LOADER_TEST_VAR = 'cofig-loader-test-var';
 		var config = { a: '%{CONFIG_LOADER_TEST_VAR}', b: '@{a}' },

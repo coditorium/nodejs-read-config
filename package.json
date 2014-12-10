@@ -1,7 +1,7 @@
 {
   "author": "Paweł Mendelski <pawel.mendelski@coditorium.com>",
   "name": "read-config",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "JSON configuration loader",
   "main": "index.js",
   "license" : "MIT",

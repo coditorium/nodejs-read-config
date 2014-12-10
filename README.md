@@ -15,7 +15,7 @@ Features:
 
 /tmp/config.json:
 ```
-{ env1: %{ENV_VAR1}, env2: %{ENV_VAR2|def} }
+{ env1: "%{ENV_VAR1}", env2: "%{ENV_VAR2|def}" }
 ```
 index.js:
 ```
@@ -67,18 +67,18 @@ console.log(config);
 /tmp/config-1.json:
 ```
 {
-	a: 'a',
-	b: 'b',
+	a: "a",
+	b: "b",
 	arr: [1, 2, 3]
 }
 ```
 /tmp/config-2.json:
 ```
 {
-	__parent: '/tmp/config-1.json',
-	// same as: __parent: './config-1.json',
-	b: 'bb',
-	c: 'aa',
+	__parent: "/tmp/config-1.json",
+	// same as: __parent: "./config-1.json",
+	b: "bb",
+	c: "aa",
 	arr: []
 }
 ```
@@ -89,9 +89,9 @@ var readConfig = require('read-config'),
 console.log(config);
 //	Output: node index.js
 //	{
-//		a: 'a'
-//		b: 'bb',
-//		c: 'aa',
+//		a: "a"
+//		b: "bb",
+//		c: "aa",
 //		arr: []
 //	}
 
@@ -102,17 +102,17 @@ console.log(config);
 /tmp/config-1.json:
 ```
 {
-	a: 'a',
-	b: 'b',
+	a: "a",
+	b: "b",
 	arr: [1, 2, 3]
 }
 ```
 /home/xxx/config-2.json:
 ```
 {
-	__parent: 'config-1.json', // no directory specified
-	b: 'bb',
-	c: 'aa',
+	__parent: "config-1", // no directory & extension specified
+	b: "bb",
+	c: "aa",
 	arr: []
 }
 ```
@@ -123,9 +123,9 @@ var readConfig = require('read-config'),
 console.log(config);
 //	Output: node index.js
 //	{
-//		a: 'a'
-//		b: 'bb',
-//		c: 'aa',
+//		a: "a"
+//		b: "bb",
+//		c: "aa",
 //		arr: []
 //	}
 ```
@@ -139,6 +139,8 @@ console.log(config);
 - **readConfig.sync(path, [opts])** - Loads configuration file synchronously.
 - **readConfig.async(path, [opts], callback)** - Loads configuration file asynchronously.
 
+All json files are loaded using [JSON5](https://www.npmjs.com/package/json5) library. It means you can add comments, and skip quotes in your config files - thank you json5;).
+
 ### Parameters
 
 - **path** (String/Array) - path (or array of paths) to configuration file. If passed an array of paths than every configuration is resolved separately than merged hierarchically (like: [grand-parent-config, parent-config, child-config]).
@@ -146,11 +148,12 @@ console.log(config);
 Default options:
 ```
 {
-	parentField: '__parent',
+	parentField: "__parent",
 	basedir: null,
-	replaceEnv: '%',
-	replaceLocal: '@',
-	skipUnresolved: false
+	replaceEnv: "%",
+	replaceLocal: "@",
+	skipUnresolved: false,
+	freeze: false
 }
 ```
 
@@ -159,6 +162,7 @@ Default options:
 	- **replaceEnv** - (String, default: '%', constraint: Must be different than any of `replace.local`) if specified enables environment variable replacement. Expected string value e.g. `%` that will be used to replace all occurrences of `%{...}` with environment variables. You can use default values like: %{a.b.c|some-default-value}.
 	- **replaceLocal** - (String, default: '@', constraint: Must be different than any of `replace.env`) if specified enables configuration variable replacement. Expected string value e.g. `@` that will be used to replace all occurrences of `@{...}` with configuration variables. You can use default values like: @{a.b.c|some-default-value}.
 	- **skipUnresolved** - (Boolean, default: false) `true` blocks error throwing on unresolved variables.
+	- **freeze** - (Boolean, default: false) `true` [freezes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze) the final config.
 
 ## Flow
 
@@ -168,7 +172,6 @@ Flow of the configuration loader:
 2. Merge all results to one json object
 3. Resolve environment variables
 4. Resolve local variables
-5. Freeze the result (freezing object - forbids it's modification)
 
 ### Gulp commands:
 
