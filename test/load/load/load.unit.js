@@ -59,7 +59,7 @@ function cases(name, load) {
 					b: 22,
 					c: 333,
 					d: 4444,
-					e: 5555,
+					e: 5555
 				});
 				done();
 			});

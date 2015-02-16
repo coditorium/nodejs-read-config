@@ -4,13 +4,13 @@
   "version": "0.1.0",
   "description": "JSON configuration loader",
   "main": "index.js",
-  "license" : "MIT",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/coditorium/nodejs-read-config.git"
   },
   "bugs": {
-      "url": "https://github.com/coditorium/nodejs-read-config/issues"
+    "url": "https://github.com/coditorium/nodejs-read-config/issues"
   },
   "scripts": {
     "test": "gulp jshint test",
@@ -30,6 +30,7 @@
     "gulp": "~3.8.10",
     "gulp-clean": "~0.3.1",
     "gulp-istanbul": "~0.5.0",
+    "gulp-jscs": "^1.4.0",
     "gulp-jshint": "~1.8.5",
     "gulp-mocha": "~1.1.1",
     "gulp-sync": "~0.1.4",

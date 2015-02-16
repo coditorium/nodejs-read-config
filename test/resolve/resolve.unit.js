@@ -25,9 +25,9 @@ describe(libmodule + ' test:', function() {
 		});
 
 		it('with embedded value', function() {
-			var config = { a: '@{b.c}', b: { c: 'x'} },
+			var config = { a: '@{b.c}', b: { c: 'x' } },
 				resolved = resolve(config, opts);
-			expect(resolved).be.eql({ a: 'x', b: { c: 'x'} });
+			expect(resolved).be.eql({ a: 'x', b: { c: 'x' } });
 		});
 
 	});

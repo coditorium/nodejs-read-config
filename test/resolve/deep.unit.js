@@ -29,7 +29,7 @@ describe(libmodule + ' test:', function() {
 	var obj = { a: 1 };
 	shouldPick(obj, 'a', { prop: 'a',obj: obj });
 	obj = { a: { b: 2 } };
-	shouldPick(obj, 'a.b', { prop: 'b', obj: obj.a});
+	shouldPick(obj, 'a.b', { prop: 'b', obj: obj.a });
 	obj = ['a', 'b', 'c'];
 	shouldPick(obj, '1', { prop: '1',obj: obj });
 	obj = { arr: ['a', 'b', 'c'] };
@@ -39,7 +39,6 @@ describe(libmodule + ' test:', function() {
 	shouldNotPick({ a: { c: 2 } }, 'a.b');
 	shouldNotPick(['a', 'b', 'c'], '10');
 	shouldNotPick({ arr: ['a', 'b', 'c'] }, 'arr.10');
-
 
 	function shouldPut(obj, prop, value, result) {
 		it('should put proprty: \'' + prop + '\' from ' + JSON.stringify(obj), function() {
