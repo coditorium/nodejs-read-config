@@ -20,10 +20,12 @@ Features:
 index.js:
 ```
 var readConfig = require('read-config'),
-	config = readConfig('/tmp/config-2.json');
+    config = readConfig('/tmp/config.json');
+
 console.log(config);
-//	Output: ENV_VAR1=abc node index.js
-//	{ env1: 'abc', env2: 'def' }
+
+//    $ ENV_VAR1=abc node index.js
+//    { env1: 'abc', env2: 'def' }
 ```
 
 ### Configuration variable replacement
@@ -31,32 +33,39 @@ console.log(config);
 /tmp/config.json:
 ```
 {
-	textVar: "def",
-	textVal: "abc-@{textVar2}-ghi"
-	numberVar: 2,
-	numberVal: "1@{numberVar}3",
-	booleanVar: true,
-	booleanVal: "@{booleanVar}",
-	objVar: null,
-	objVal: "@{objVar}",
+    textVar: "def",
+    textVal: "abc-@{textVar2}-ghi"
+    numberVar: 2,
+    numberVal: "1@{numberVar}3",
+    booleanVar: true,
+    booleanVal: "@{booleanVar}",
+    objVar: null,
+    objVal: "@{objVar}",
+	nested: {
+		x: 'X',
+		y: '@{.x}', // same as @{nested.x}
+		z: '@{..textVar}' // same as @{textVar}
+	}
 }
 ```
 index.js:
 ```
 var readConfig = require('read-config'),
-	config = readConfig('/tmp/config.json');
+    config = readConfig('/tmp/config.json');
+
 console.log(config);
-//	Output: node index.js
-//	{
-//		textVar: "def",
-//		textVal: "abc-def-ghi", // "abc-@{textVar2}-ghi",
-//		numberVar: 2,
-//		numberVal: 123, // "1@{numberVar}3",
-//		booleanVar: true,
-//		booleanVal: true, // "@{booleanVar}",
-//		objVar: null,
-//		objVal: null // "@{objVar}",
-//	}
+
+//    $ node index.js
+//    {
+//        textVar: "def",
+//        textVal: "abc-def-ghi", // "abc-@{textVar2}-ghi",
+//        numberVar: 2,
+//        numberVal: 123, // "1@{numberVar}3",
+//        booleanVar: true,
+//        booleanVal: true, // "@{booleanVar}",
+//        objVar: null,
+//        objVal: null // "@{objVar}",
+//    }
 ```
 
 - It is possible to use nested paths like `@{x.y.z}`
@@ -67,33 +76,35 @@ console.log(config);
 /tmp/config-1.json:
 ```
 {
-	a: "a",
-	b: "b",
-	arr: [1, 2, 3]
+    a: "a",
+    b: "b",
+    arr: [1, 2, 3]
 }
 ```
 /tmp/config-2.json:
 ```
 {
-	__parent: "/tmp/config-1.json",
-	// same as: __parent: "./config-1.json",
-	b: "bb",
-	c: "aa",
-	arr: []
+    __parent: "/tmp/config-1.json",
+    // same as: __parent: "./config-1.json",
+    b: "bb",
+    c: "aa",
+    arr: []
 }
 ```
 index.js:
 ```
 var readConfig = require('read-config'),
-	config = readConfig('/tmp/config-2.json');
+    config = readConfig('/tmp/config-2.json');
+
 console.log(config);
-//	Output: node index.js
-//	{
-//		a: "a"
-//		b: "bb",
-//		c: "aa",
-//		arr: []
-//	}
+
+//    $ node index.js
+//    {
+//        a: "a"
+//        b: "bb",
+//        c: "aa",
+//        arr: []
+//    }
 
 ```
 
@@ -102,32 +113,34 @@ console.log(config);
 /tmp/config-1.json:
 ```
 {
-	a: "a",
-	b: "b",
-	arr: [1, 2, 3]
+    a: "a",
+    b: "b",
+    arr: [1, 2, 3]
 }
 ```
 /home/xxx/config-2.json:
 ```
 {
-	__parent: "config-1", // no directory & extension specified
-	b: "bb",
-	c: "aa",
-	arr: []
+    __parent: "config-1", // no directory & extension specified
+    b: "bb",
+    c: "aa",
+    arr: []
 }
 ```
 index.js:
 ```
 var readConfig = require('read-config'),
-	config = readConfig('/tmp/config-2.json');
+    config = readConfig('/tmp/config-2.json');
+
 console.log(config);
-//	Output: node index.js
-//	{
-//		a: "a"
-//		b: "bb",
-//		c: "aa",
-//		arr: []
-//	}
+
+//    $ node index.js
+//    {
+//        a: "a"
+//        b: "bb",
+//        c: "aa",
+//        arr: []
+//    }
 ```
 
 
@@ -145,24 +158,24 @@ All json files are loaded using [JSON5](https://www.npmjs.com/package/json5) lib
 
 - **path** (String/Array) - path (or array of paths) to configuration file. If passed an array of paths than every configuration is resolved separately than merged hierarchically (like: [grand-parent-config, parent-config, child-config]).
 - **opts** (Object, optional) - configuration loading options
-Default options:
+    - **parentField** - (String, default: '__parent') if specified enables configuration hierarchy. It's value is used to resolve parent configuration file. This field will be removed from the result.
+    - **basedir** - (String/Array, default: []) base directory (or directories) used for searching configuration files. `basedir` has lower priority than child configuration directory and absolute paths.
+    - **replaceEnv** - (String, default: '%', constraint: Must be different than any of `replace.local`) if specified enables environment variable replacement. Expected string value e.g. `%` that will be used to replace all occurrences of `%{...}` with environment variables. You can use default values like: %{a.b.c|some-default-value}.
+    - **replaceLocal** - (String, default: '@', constraint: Must be different than any of `replace.env`) if specified enables configuration variable replacement. Expected string value e.g. `@` that will be used to replace all occurrences of `@{...}` with configuration variables. You can use default values like: @{a.b.c|some-default-value}.
+    - **skipUnresolved** - (Boolean, default: false) `true` blocks error throwing on unresolved variables.
+    - **freeze** - (Boolean, default: false) `true` [freezes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze) the final config.
+
+Default **opts** values:
 ```
 {
-	parentField: "__parent",
-	basedir: null,
-	replaceEnv: "%",
-	replaceLocal: "@",
-	skipUnresolved: false,
-	freeze: false
+    parentField: "__parent",
+    basedir: null,
+    replaceEnv: "%",
+    replaceLocal: "@",
+    skipUnresolved: false,
+    freeze: false
 }
 ```
-
-	- **parentField** - (String, default: '__parent') if specified enables configuration hierarchy. It's value is used to resolve parent configuration file. This field will be removed from the result.
-	- **basedir** - (String/Array, default: []) base directory (or directories) used for searching configuration files. `basedir` has lower priority than child configuration directory and absolute paths.
-	- **replaceEnv** - (String, default: '%', constraint: Must be different than any of `replace.local`) if specified enables environment variable replacement. Expected string value e.g. `%` that will be used to replace all occurrences of `%{...}` with environment variables. You can use default values like: %{a.b.c|some-default-value}.
-	- **replaceLocal** - (String, default: '@', constraint: Must be different than any of `replace.env`) if specified enables configuration variable replacement. Expected string value e.g. `@` that will be used to replace all occurrences of `@{...}` with configuration variables. You can use default values like: @{a.b.c|some-default-value}.
-	- **skipUnresolved** - (Boolean, default: false) `true` blocks error throwing on unresolved variables.
-	- **freeze** - (Boolean, default: false) `true` [freezes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze) the final config.
 
 ## Flow
 
