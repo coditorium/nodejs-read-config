@@ -24,8 +24,8 @@ var readConfig = require('read-config'),
 
 console.log(config);
 
-//    $ ENV_VAR1=abc node index.js
-//    { env1: 'abc', env2: 'def' }
+//  $ ENV_VAR1=abc node index.js
+//  { env1: 'abc', env2: 'def' }
 ```
 
 ### Configuration variable replacement
@@ -43,8 +43,8 @@ console.log(config);
     objVal: "@{objVar}",
 	nested: {
 		x: 'X',
-		y: '@{.x}', // same as @{nested.x}
-		z: '@{..textVar}' // same as @{textVar}
+		y: '@{./x}', // same as @{nested.x}
+		z: '@{../textVar}' // same as @{textVar}
 	}
 }
 ```
@@ -55,17 +55,17 @@ var readConfig = require('read-config'),
 
 console.log(config);
 
-//    $ node index.js
-//    {
-//        textVar: "def",
-//        textVal: "abc-def-ghi", // "abc-@{textVar2}-ghi",
-//        numberVar: 2,
-//        numberVal: 123, // "1@{numberVar}3",
-//        booleanVar: true,
-//        booleanVal: true, // "@{booleanVar}",
-//        objVar: null,
-//        objVal: null // "@{objVar}",
-//    }
+//  $ node index.js
+//  {
+//    textVar: "def",
+//    textVal: "abc-def-ghi", // "abc-@{textVar2}-ghi",
+//    numberVar: 2,
+//    numberVal: 123, // "1@{numberVar}3",
+//    booleanVar: true,
+//    booleanVal: true, // "@{booleanVar}",
+//    objVar: null,
+//    objVal: null // "@{objVar}",
+//  }
 ```
 
 - It is possible to use nested paths like `@{x.y.z}`
@@ -98,13 +98,13 @@ var readConfig = require('read-config'),
 
 console.log(config);
 
-//    $ node index.js
-//    {
-//        a: "a"
-//        b: "bb",
-//        c: "aa",
-//        arr: []
-//    }
+//  $ node index.js
+//  {
+//    a: "a"
+//    b: "bb",
+//    c: "aa",
+//    arr: []
+//  }
 
 ```
 
@@ -134,13 +134,13 @@ var readConfig = require('read-config'),
 
 console.log(config);
 
-//    $ node index.js
-//    {
-//        a: "a"
-//        b: "bb",
-//        c: "aa",
-//        arr: []
-//    }
+//  $ node index.js
+//  {
+//    a: "a"
+//    b: "bb",
+//    c: "aa",
+//    arr: []
+//  }
 ```
 
 
@@ -188,7 +188,7 @@ Flow of the configuration loader:
 
 ### Gulp commands:
 
-- `gulp jshint` - runs jshint analysis
+- `gulp checkstyle` - runs jshint and jscsrc analysis
 - `gulp test` - runs tests
 - `gulp test --file test/loader.js` - runs single test file `./test/loader.js`
 - `gulp` - alias for `gulp jshint test`

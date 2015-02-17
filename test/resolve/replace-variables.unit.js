@@ -137,7 +137,7 @@ describe(libmodule + ' test:', function() {
 	it('should replace both concatenated variables', function() {
 		var input = { x: '%{a}%{b}', y: '%{b}%{a}' },
 		replaced = replaceVariables(input, { a: 999, b: 888 });
-		expect(replaced).to.be.eql({ x: '999888', y: '888999' });
+		expect(replaced).to.be.eql({ x: 999888, y: 888999 });
 	});
 
 	it('should not replace variables with ather variables', function() {
@@ -161,13 +161,13 @@ describe(libmodule + ' test:', function() {
 	it('should not replace variable', function() {
 		var input = { x: '%{y}' },
 			replaced = replaceVariables(input, {}, { skipUnresolved: true });
-		expect(replaced).to.be.eql(input);
+		expect(replaced).to.be.eql({ x: 'NOTFOUND:y' });
 	});
 
 	it('should not replace variable with undefined', function() {
 		var input = { x: '%{y}' },
 		replaced = replaceVariables(input, { y: undefined }, { skipUnresolved: true });
-		expect(replaced).to.be.eql(input);
+		expect(replaced).to.be.eql({ x: 'NOTFOUND:y' });
 	});
 
 	it('should replace with default variable', function() {
