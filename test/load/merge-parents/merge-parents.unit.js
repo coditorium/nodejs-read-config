@@ -91,6 +91,37 @@ function cases(name, mergeParents) {
 			});
 		});
 
+		it('should not return error on optional not existing parent', function(done) {
+			var configPath = path.resolve(__dirname, 'configs', 'config-error.json'),
+				opts = {
+					parentField: '__parent',
+					optional: ['xxx'],
+					basedir: path.resolve(__dirname, 'configs', 'basedir')
+				};
+			mergeParents(configPath, opts, function(err, config) {
+				expect(err).to.not.exist;
+				expect(config).to.eql({
+					b: 22,
+					c: 33
+				});
+				done();
+			});
+		});
+
+		it('should not return error on optional not existing config', function(done) {
+			var configPath = path.resolve(__dirname, 'configs', 'xxx.json'),
+				opts = {
+					parentField: '__parent',
+					optional: [configPath],
+					basedir: path.resolve(__dirname, 'configs', 'basedir')
+				};
+			mergeParents(configPath, opts, function(err, config) {
+				expect(err).to.not.exist;
+				expect(config).to.be.eql({});
+				done();
+			});
+		});
+
 	});
 
 }

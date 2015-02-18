@@ -8,6 +8,7 @@ Features:
 - Variable default values
 - Hierarchical configurations
 - Configuration merging
+- Support for JSON5 and YAML
 
 ## How to use
 
@@ -33,19 +34,20 @@ console.log(config);
 /tmp/config.json:
 ```
 {
-    textVar: "def",
-    textVal: "abc-@{textVar2}-ghi"
-    numberVar: 2,
-    numberVal: "1@{numberVar}3",
-    booleanVar: true,
-    booleanVal: "@{booleanVar}",
-    objVar: null,
-    objVal: "@{objVar}",
-	nested: {
+    text1: "def",
+    text2: "abc-@{text1}-ghi"
+    number1: 1,
+    number2: "@{number1}",
+    boolean1: true,
+    boolean2: "@{boolean1}",
+    null1: null,
+    null2: "@{null1}",
+	obj1: {
 		x: 'X',
-		y: '@{./x}', // same as @{nested.x}
-		z: '@{../textVar}' // same as @{textVar}
-	}
+		y: '@{./x}', // same as @{obj1.x}
+		z: '@{../text1}' // same as @{text1}
+	},
+	obj2: "@{obj1}"
 }
 ```
 index.js:
@@ -57,19 +59,30 @@ console.log(config);
 
 //  $ node index.js
 //  {
-//    textVar: "def",
-//    textVal: "abc-def-ghi", // "abc-@{textVar2}-ghi",
-//    numberVar: 2,
-//    numberVal: 123, // "1@{numberVar}3",
-//    booleanVar: true,
-//    booleanVal: true, // "@{booleanVar}",
-//    objVar: null,
-//    objVal: null // "@{objVar}",
+//    text1: "def",
+//    text2: "abc-def-ghi"
+//    number1: 1,
+//    number2: 1,
+//    boolean1: true,
+//    boolean2: true,
+//    null1: null,
+//    null2: null,
+//    obj1: {
+//      x: 'X',
+//      y: 'X',
+//      z: 'def'
+//    },
+//    obj2: {
+//      x: 'X',
+//      y: 'X',
+//      z: 'def'
+//    }
 //  }
 ```
 
 - It is possible to use nested paths like `@{x.y.z}`
-- It is possible to nest variables up to 3 levels (see options)
+- It is possible to use relative paths like `@{./x}` and `@{../y}`
+- It is possible to concatenate variables like `@{x}abc@{y}def@{ghi}`
 
 ### Configuration hierarchy
 
@@ -148,17 +161,18 @@ console.log(config);
 
 ### Functions
 
-- **readConfig(path, [opts])** - Alias for `readConfig.sync(path, [opts])`.
-- **readConfig.sync(path, [opts])** - Loads configuration file synchronously.
-- **readConfig.async(path, [opts], callback)** - Loads configuration file asynchronously.
+- **readConfig(paths, [opts])** - Alias for `readConfig.sync(paths, [opts])`.
+- **readConfig.sync(paths, [opts])** - Loads configuration file synchronously.
+- **readConfig.async(paths, [opts], callback)** - Loads configuration file asynchronously.
 
 All json files are loaded using [JSON5](https://www.npmjs.com/package/json5) library. It means you can add comments, and skip quotes in your config files - thank you json5;).
 
 ### Parameters
 
-- **path** (String/Array) - path (or array of paths) to configuration file. If passed an array of paths than every configuration is resolved separately than merged hierarchically (like: [grand-parent-config, parent-config, child-config]).
+- **paths** (String/Array) - path (or array of paths) to configuration file. If passed an array of paths than every configuration is resolved separately than merged hierarchically (like: [grand-parent-config, parent-config, child-config]).
 - **opts** (Object, optional) - configuration loading options
     - **parentField** - (String, default: '__parent') if specified enables configuration hierarchy. It's value is used to resolve parent configuration file. This field will be removed from the result.
+    - **optional** - (String, default: null) list of configuration paths that are optional. If any configuration path is not resolved and is not optional it's treated as empty file and no exception is raised.
     - **basedir** - (String/Array, default: []) base directory (or directories) used for searching configuration files. `basedir` has lower priority than child configuration directory and absolute paths.
     - **replaceEnv** - (String, default: '%', constraint: Must be different than any of `replace.local`) if specified enables environment variable replacement. Expected string value e.g. `%` that will be used to replace all occurrences of `%{...}` with environment variables. You can use default values like: %{a.b.c|some-default-value}.
     - **replaceLocal** - (String, default: '@', constraint: Must be different than any of `replace.env`) if specified enables configuration variable replacement. Expected string value e.g. `@` that will be used to replace all occurrences of `@{...}` with configuration variables. You can use default values like: @{a.b.c|some-default-value}.
@@ -195,7 +209,7 @@ Flow of the configuration loader:
 - `gulp test-cov` - runs instrumented tests, generates reports to `./build/test`
 - `gulp test-cov --file test/loader.js` - runs single instrumented test file `./test/loader.js`
 - `gulp clean` - removes `./build` folder
-- `gulp ci` - alias for `gulp clean jshint test-cov`
+- `gulp ci` - alias for `gulp clean checkstyle test-cov`
 
 ### NPM commands:
 

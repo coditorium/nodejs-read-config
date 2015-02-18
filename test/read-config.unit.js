@@ -55,7 +55,7 @@ function cases(name, loadConfig) {
 			});
 
 			it('the same replace markers', function(done) {
-				loadConfig('xxx', { replace: { env:'x', local: 'x' } }, function(err) {
+				loadConfig('xxx', { replace: { env: 'x', local: 'x' } }, function(err) {
 					expect(err).to.exist;
 					done();
 				});
@@ -72,6 +72,7 @@ function cases(name, loadConfig) {
 			], {
 				basedir: absolute('configs/basedir')
 			}, function(err, config) {
+				delete process.env['CONFIG_LOADER_TEST_VAR_B'];
 				expect(err).to.not.exist;
 				expect(config).to.exist;
 				expect(config).to.be.eql({
@@ -84,6 +85,27 @@ function cases(name, loadConfig) {
 					'env-var': 'config-loader-test-var-b',
 					'local-var': 'a1',
 					'env-var-with-default': 999
+				});
+				done();
+			});
+		});
+
+		it('should load config with files in different format', function(done) {
+			process.env['CONFIG_LOADER_TEST_VAR_DEF'] = 'config-loader-test-var-def';
+			loadConfig([
+				absolute('configs/other/config-default.yaml'),
+				absolute('configs/config-simple.json')
+			], {
+				basedir: absolute('configs/basedir')
+			}, function(err, config) {
+				delete process.env['CONFIG_LOADER_TEST_VAR_DEF'];
+				expect(err).to.not.exist;
+				expect(config).to.exist;
+				expect(config).to.be.eql({
+					default: true,
+					default2: true,
+					a: 1,
+					'env-var': 'config-loader-test-var-def'
 				});
 				done();
 			});

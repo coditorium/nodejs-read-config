@@ -38,10 +38,16 @@ describe(libmodule + ' test:', function() {
 			expect(replaced).to.be.eql({ x: true });
 		});
 
-		it('with boolean default', function() {
+		it('with true boolean default', function() {
 			var input = { x: '%{y|true}' },
 			replaced = replaceVariables(input, {});
 			expect(replaced).to.be.eql({ x: true });
+		});
+
+		it('with false boolean default', function() {
+			var input = { x: '%{y|false}' },
+			replaced = replaceVariables(input, {});
+			expect(replaced).to.be.eql({ x: false });
 		});
 
 		it('with object', function() {
@@ -66,6 +72,12 @@ describe(libmodule + ' test:', function() {
 			var input = { x: '%{y|null}' },
 			replaced = replaceVariables(input, {});
 			expect(replaced).to.be.eql({ x: null });
+		});
+
+		it('with undefined default', function() {
+			var input = { x: '%{y|undefined}' },
+			replaced = replaceVariables(input, {});
+			expect(replaced).to.be.eql({ x: undefined });
 		});
 
 	});
@@ -137,7 +149,7 @@ describe(libmodule + ' test:', function() {
 	it('should replace both concatenated variables', function() {
 		var input = { x: '%{a}%{b}', y: '%{b}%{a}' },
 		replaced = replaceVariables(input, { a: 999, b: 888 });
-		expect(replaced).to.be.eql({ x: 999888, y: 888999 });
+		expect(replaced).to.be.eql({ x: '999888', y: '888999' });
 	});
 
 	it('should not replace variables with ather variables', function() {
