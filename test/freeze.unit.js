@@ -30,8 +30,8 @@ describe(libmodule + ' test:', function() {
 
 		});
 	}
-	checkCrudOnObject('simple object', freeze({ a:1 }));
-	checkCrudOnObject('subobject', freeze({ x: { a:1 } }).x);
+	checkCrudOnObject('simple object', freeze({ a: 1 }));
+	checkCrudOnObject('subobject', freeze({ x: { a: 1 } }).x);
 
 	function checkCrudOnArray(name, freezed) {
 
@@ -65,6 +65,5 @@ describe(libmodule + ' test:', function() {
 	}
 	checkCrudOnArray('simple array', freeze(['a', 'b', 'c']));
 	//checkCrudOnArray('subarray', freeze(['x', ['a', 'b', 'c']])[1]);
-
 
 });

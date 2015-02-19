@@ -43,7 +43,7 @@ describe(libmodule + ' test:', function() {
 
 	it('should merge two objects and override whole array from first of them', function() {
 		var config1 = { a: 1, b: ['a', 'b', 'c'] },
-			config2 = { b: ['a'], c: 3};
+			config2 = { b: ['a'], c: 3 };
 		expect(mergeConfigs([config1, config2])).to.be.eql({ a: 1, b: ['a'], c: 3 });
 	});
 

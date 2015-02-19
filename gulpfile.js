@@ -26,7 +26,7 @@ gulp.task('clean', function() {
 gulp.task('jshint', function() {
 	return gulp.src([
 			'**/*.js',
-			'!node_modules'
+			'!node_modules/**/*'
 		])
 		.pipe(jshint())
 		.pipe(jshint.reporter('jshint-stylish'))
@@ -36,7 +36,7 @@ gulp.task('jshint', function() {
 gulp.task('jscsrc', function() {
 	return gulp.src([
 			'**/*.js',
-			'!node_modules'
+			'!node_modules/**/*'
 		])
 		.pipe(jscs());
 });
