@@ -156,6 +156,16 @@ console.log(config);
 //  }
 ```
 
+### YAML config format
+
+Using YAML representation lookout for special characters like: '%' and '@'.
+
+/tmp/config.yml:
+```
+a: "@{LOCAL_VAR}"
+b: "%{ENV_VAR}"
+c: No quotes needed!
+```
 
 ## API
 
@@ -183,6 +193,7 @@ Default **opts** values:
 ```
 {
     parentField: "__parent",
+    optional: [],
     basedir: null,
     replaceEnv: "%",
     replaceLocal: "@",
