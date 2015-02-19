@@ -1,7 +1,7 @@
 # nodejs-read-config
 
-[![Travis build status](https://travis-ci.org/coditorium/read-config.png?branch=master)](https://travis-ci.org/coditorium/read-config)
-[![dependencies](https://david-dm.org/coditorium/read-config.png)](https://david-dm.org/coditorium/read-config)
+[![Travis build status](https://travis-ci.org/coditorium/nodejs-read-config.png?branch=master)](https://travis-ci.org/coditorium/nodejs-read-config)
+[![dependencies](https://david-dm.org/coditorium/nodejs-read-config.png)](https://david-dm.org/coditorium/nodejs-read-config)
 [![Coverage Status](https://coveralls.io/repos/coditorium/nodejs-read-config/badge.svg)](https://coveralls.io/r/coditorium/nodejs-read-config)
 
 [![NPM info](https://nodei.co/npm/read-config.png?downloads=true)](https://nodei.co/npm/read-config.png?downloads=true)
