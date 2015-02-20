@@ -21,11 +21,11 @@ Features:
 ### Environment variable replacement
 
 /tmp/config.json:
-```
+``` javascript
 { env1: "%{ENV_VAR1}", env2: "%{ENV_VAR2|def}" }
 ```
 index.js:
-```
+``` javascript
 var readConfig = require('read-config'),
     config = readConfig('/tmp/config.json');
 
@@ -38,7 +38,7 @@ console.log(config);
 ### Configuration variable replacement
 
 /tmp/config.json:
-```
+``` javascript
 {
     text1: "def",
     text2: "abc-@{text1}-ghi"
@@ -57,7 +57,7 @@ console.log(config);
 }
 ```
 index.js:
-```
+``` javascript
 var readConfig = require('read-config'),
     config = readConfig('/tmp/config.json');
 
@@ -93,7 +93,7 @@ console.log(config);
 ### Configuration hierarchy
 
 /tmp/config-1.json:
-```
+``` javascript
 {
     a: "a",
     b: "b",
@@ -101,7 +101,7 @@ console.log(config);
 }
 ```
 /tmp/config-2.json:
-```
+``` javascript
 {
     __parent: "/tmp/config-1.json",
     // same as: __parent: "./config-1.json",
@@ -111,7 +111,7 @@ console.log(config);
 }
 ```
 index.js:
-```
+``` javascript
 var readConfig = require('read-config'),
     config = readConfig('/tmp/config-2.json');
 
@@ -130,7 +130,7 @@ console.log(config);
 ### Hierarchy and basedir
 
 /tmp/config-1.json:
-```
+``` javascript
 {
     a: "a",
     b: "b",
@@ -138,7 +138,7 @@ console.log(config);
 }
 ```
 /home/xxx/config-2.json:
-```
+``` javascript
 {
     __parent: "config-1", // no directory & extension specified
     b: "bb",
@@ -147,7 +147,7 @@ console.log(config);
 }
 ```
 index.js:
-```
+``` javascript
 var readConfig = require('read-config'),
     config = readConfig('/tmp/config-2.json');
 
@@ -167,7 +167,7 @@ console.log(config);
 Using YAML representation lookout for special characters like: '%' and '@'.
 
 /tmp/config.yml:
-```
+``` javascript
 a: "@{LOCAL_VAR}"
 b: "%{ENV_VAR}"
 c: No quotes needed!
@@ -196,7 +196,7 @@ All json files are loaded using [JSON5](https://www.npmjs.com/package/json5) lib
     - **freeze** - (Boolean, default: false) `true` [freezes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze) the final config.
 
 Default **opts** values:
-```
+``` javascript
 {
     parentField: "__parent",
     optional: [],
