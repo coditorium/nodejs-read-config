@@ -13,7 +13,7 @@
     "url": "https://github.com/coditorium/nodejs-read-config/issues"
   },
   "scripts": {
-    "test": "gulp jshint test",
+    "test": "gulp checkstyle test",
     "ci": "gulp ci",
     "coveralls": "cat build/test/coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
   },

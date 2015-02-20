@@ -4,7 +4,7 @@
 [![dependencies](https://david-dm.org/coditorium/nodejs-read-config.png)](https://david-dm.org/coditorium/nodejs-read-config)
 [![Coverage Status](https://coveralls.io/repos/coditorium/nodejs-read-config/badge.svg)](https://coveralls.io/r/coditorium/nodejs-read-config)
 
-[![NPM info](https://nodei.co/npm/read-config.png?downloads=true)](https://nodei.co/npm/read-config.png?downloads=true)
+[![NPM info](https://nodei.co/npm/read-config.png?downloads=true)](https://www.npmjs.com/package/read-config)
 
 JSON based configuration loader for Node.js.
 Features:
