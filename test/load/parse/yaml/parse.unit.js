@@ -23,6 +23,12 @@ describe("YAML.parse module test:", function() {
 			}).to.throw();
 		});
 
+		it("and return empty object on empty json", function() {
+			var result = yaml.parseSync('');
+			expect(result).to.exist;
+			expect(result).to.be.eql({});
+		});
+
 	});
 
 	describe("should parse yaml document", function() {

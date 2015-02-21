@@ -8,6 +8,7 @@ describe("YAML.load test:", function() {
 
 	var validYamlFile = path.resolve(__dirname, './valid.yml'),
 		validYaml = { x: 'a' },
+		emptyYamlFile = path.resolve(__dirname, './empty.yml'),
 		invalidYamlFile = path.resolve(__dirname, './invalid.yml');
 
 	describe("should loadSync yaml document", function() {
@@ -22,6 +23,12 @@ describe("YAML.load test:", function() {
 			expect(function() {
 				yaml.loadSync(invalidYamlFile);
 			}).to.throw();
+		});
+
+		it("and return empty object", function() {
+			var result = yaml.loadSync(emptyYamlFile);
+			expect(result).to.exist;
+			expect(result).to.be.eql({});
 		});
 
 	});
@@ -41,6 +48,15 @@ describe("YAML.load test:", function() {
 			yaml.load(invalidYamlFile, function(err, result) {
 				expect(err).to.exist;
 				expect(result).to.not.exist;
+				done();
+			});
+		});
+
+		it("and return empty object", function(done) {
+			yaml.load(emptyYamlFile, function(err, result) {
+				if (err) return done(err);
+				expect(result).to.exist;
+				expect(result).to.be.eql({});
 				done();
 			});
 		});
