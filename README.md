@@ -6,7 +6,7 @@
 
 [![NPM info](https://nodei.co/npm/read-config.png?downloads=true)](https://www.npmjs.com/package/read-config)
 
-JSON based configuration loader for Node.js.
+Multi format configuration loader for Node.js.
 Features:
 
 - System variables replacement
@@ -14,7 +14,10 @@ Features:
 - Variable default values
 - Hierarchical configurations
 - Configuration merging
-- Support for JSON5 and YAML
+- Supported format:
+  - (JSON5)[http://json5.org/]
+  - (YAML)[http://en.wikipedia.org/wiki/YAML]
+  - (Properties)[http://en.wikipedia.org/wiki/.properties]
 
 ## How to use
 

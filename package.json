@@ -1,8 +1,8 @@
 {
   "author": "Paweł Mendelski <pawel.mendelski@coditorium.com>",
   "name": "read-config",
-  "version": "1.2.1",
-  "description": "JSON configuration loader",
+  "version": "1.3.1",
+  "description": "Multi format configuration loader",
   "main": "index.js",
   "license": "MIT",
   "repository": {
@@ -21,13 +21,15 @@
     "coditorium",
     "configuration",
     "json",
-    "yaml"
+    "yaml",
+    "properties"
   ],
   "dependencies": {
     "lodash": "^3.3.1",
     "async": "~0.9.0",
     "json5": "~0.4.0",
-    "js-yaml": "~3.2.7"
+    "js-yaml": "~3.2.7",
+    "properties": "~1.2.1"
   },
   "devDependencies": {
     "chai": "^2.1.1",
