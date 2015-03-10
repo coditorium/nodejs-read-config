@@ -15,9 +15,9 @@ Features:
 - Hierarchical configurations
 - Configuration merging
 - Supported format:
-  - (JSON5)[http://json5.org/]
-  - (YAML)[http://en.wikipedia.org/wiki/YAML]
-  - (Properties)[http://en.wikipedia.org/wiki/.properties]
+  - [JSON5](http://json5.org/)
+  - [YAML](http://en.wikipedia.org/wiki/YAML)
+  - [Properties](http://en.wikipedia.org/wiki/.properties)
 
 ## How to use
 
