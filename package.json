@@ -1,7 +1,7 @@
 {
   "author": "Paweł Mendelski <pawel.mendelski@coditorium.com>",
   "name": "read-config",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "Multi format configuration loader",
   "main": "index.js",
   "license": "MIT",
