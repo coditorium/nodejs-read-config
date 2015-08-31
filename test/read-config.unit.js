@@ -82,6 +82,7 @@ function cases(name, loadConfig) {
 					b1: 'b1',
 					b2: 'b2',
 					b3: 'b3',
+					empty: null,
 					'env-var': 'config-loader-test-var-b',
 					'local-var': 'a1',
 					'env-var-with-default': 999

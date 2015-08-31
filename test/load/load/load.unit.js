@@ -65,5 +65,31 @@ function cases(name, load) {
 			});
 		});
 
+		it('should load cofig file relative to child configuration file', function(done) {
+			load(absolute('configs/config2'), { parentField: '__parent' }, function(err, config) {
+				expect(err).to.not.exist;
+				expect(config).to.exist;
+				expect(config).to.be.eql({
+					a: 1,
+					b: 22,
+					c: 33
+				});
+				done();
+			});
+		});
+
+		it('should load cofig file relative to process CWD', function(done) {
+			load(absolute('configs/config5'), { parentField: '__parent' }, function(err, config) {
+				expect(err).to.not.exist;
+				expect(config).to.exist;
+				expect(config).to.be.eql({
+					a: 1,
+					b: 22,
+					c: 33
+				});
+				done();
+			});
+		});
+
 	});
 }

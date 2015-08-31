@@ -5,7 +5,8 @@ var libmodule = 'resolve/index',
 	expect = require('chai').expect,
 	opts = {
 		replaceEnv: '%',
-		replaceLocal: '@'
+		replaceLocal: '@',
+		override: 'CONFIGTEST'
 	};
 
 describe(libmodule + ' test:', function() {
@@ -43,19 +44,59 @@ describe(libmodule + ' test:', function() {
 			});
 		});
 
-	});
-
-	it('should replace env variables before local', function() {
-		process.env.CONFIG_LOADER_TEST_VAR = 'cofig-loader-test-var';
-		var config = { a: '%{CONFIG_LOADER_TEST_VAR}', b: '@{a}' },
-			resolved = resolve(config, opts);
-		expect(resolved).be.eql({
-			a: 'cofig-loader-test-var',
-			b: 'cofig-loader-test-var'
+		it('before replacing local variables', function() {
+			process.env.CONFIG_LOADER_TEST_VAR = 'cofig-loader-test-var';
+			var config = { a: '%{CONFIG_LOADER_TEST_VAR}', b: '@{a}' },
+				resolved = resolve(config, opts);
+			expect(resolved).be.eql({
+				a: 'cofig-loader-test-var',
+				b: 'cofig-loader-test-var'
+			});
 		});
+
 	});
 
-	it('should not resolve env variables', function() {
+	describe('should override config with system variables', function() {
+
+		afterEach(function() {
+			delete process.env['CONFIGTEST_objProp_prop'];
+			delete process.env['CONFIGTEST_a'];
+			delete process.env['CONFIGTEST_b'];
+		});
+
+		it('basic example', function() {
+			process.env['CONFIGTEST_a'] = 'a-overriden';
+			process.env['CONFIGTEST_b'] = 'b-overriden';
+			var config = { a: 'a' },
+				resolved = resolve(config, opts);
+			expect(resolved).be.eql({
+				a: 'a-overriden',
+				b: 'b-overriden'
+			});
+		});
+
+		it('nested example', function() {
+			process.env['CONFIGTEST_objProp_prop'] = 'overriden';
+			var config = { objProp: { prop: 'prop' } },
+				resolved = resolve(config, opts);
+			expect(resolved).be.eql({
+				objProp: { prop: 'overriden' }
+			});
+		});
+
+		it('before replacing local variables', function() {
+			process.env['CONFIGTEST_a'] = 'a-overriden';
+			var config = { a: 'a', b: '@{a}' },
+				resolved = resolve(config, opts);
+			expect(resolved).be.eql({
+				a: 'a-overriden',
+				b: 'a-overriden'
+			});
+		});
+
+	});
+
+	it('should not resolve env variables by default', function() {
 		process.env.CONFIG_LOADER_TEST_VAR = 'cofig-loader-test-var';
 		var config = { a: '%{CONFIG_LOADER_TEST_VAR}', b: '@{a}' },
 			resolved = resolve(config);
@@ -65,7 +106,7 @@ describe(libmodule + ' test:', function() {
 	it('should throw error on unresolved variable', function() {
 		expect(function() {
 			resolve({ y: '%{x}' }, opts);
-		}).to.throw('Could not resolve environment variable. Unresolved configuration variable: x');
+		}).to.throw('Could not resolve environmental variable. Unresolved configuration variable: x');
 	});
 
 	it('should not throw error on unresolved variable', function() {
@@ -73,7 +114,6 @@ describe(libmodule + ' test:', function() {
 			resolve({ y: '%{x}' }, {
 				replace: {
 					env: '%',
-					local: '@',
 					skipUnresolved: true
 				}
 			});

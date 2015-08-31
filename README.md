@@ -9,11 +9,11 @@
 Multi format configuration loader for Node.js.
 Features:
 
-- System variables replacement
-- Configuration environment replacement
+- Environmental variables replacement
+- Configuration variables replacement
+- Overriding configuration properties via environmental variables
 - Variable default values
 - Hierarchical configurations
-- Configuration merging
 - Supported format:
   - [JSON5](http://json5.org/)
   - [YAML](http://en.wikipedia.org/wiki/YAML)
@@ -37,6 +37,37 @@ console.log(config);
 //  $ ENV_VAR1=abc node index.js
 //  { env1: 'abc', env2: 'def' }
 ```
+
+- It is possible to change `%` to any other character. Just use `replaceEnv` configuration option.
+- It is possible to use default values when environmental variable is not set.
+
+### Configuration overriding with system variables
+
+/tmp/config.json:
+``` javascript
+{
+    rootProp: "rootProp",
+    objProp: {
+		x: 'X'
+	}
+}
+```
+index.js:
+``` javascript
+var readConfig = require('read-config'),
+    config = readConfig('/tmp/config.json', { override: true });
+
+console.log(config);
+
+//  $ ENV_VAR1=abc node index.js
+//  { rootProp: 'rootProp', objProp: { x: 'X'} }
+
+//  $ CONFIG_objProp_x=abc node index.js
+//  { rootProp: 'rootProp', objProp: { x: 'abc'} }
+```
+
+- It is possible to change `CONFIG` to any other character. Just use `override` configuration option.
+- It is possible to override existing value or create new one.
 
 ### Configuration variable replacement
 
@@ -190,11 +221,12 @@ All json files are loaded using [JSON5](https://www.npmjs.com/package/json5) lib
 
 - **paths** (String/Array) - path (or array of paths) to configuration file. If passed an array of paths than every configuration is resolved separately than merged hierarchically (like: [grand-parent-config, parent-config, child-config]).
 - **opts** (Object, optional) - configuration loading options
-    - **parentField** - (String, default: '__parent') if specified enables configuration hierarchy. It's value is used to resolve parent configuration file. This field will be removed from the result.
-    - **optional** - (String, default: null) list of configuration paths that are optional. If any configuration path is not resolved and is not optional it's treated as empty file and no exception is raised.
-    - **basedir** - (String/Array, default: []) base directory (or directories) used for searching configuration files. `basedir` has lower priority than child configuration directory and absolute paths.
-    - **replaceEnv** - (String, default: '%', constraint: Must be different than any of `replace.local`) if specified enables environment variable replacement. Expected string value e.g. `%` that will be used to replace all occurrences of `%{...}` with environment variables. You can use default values like: %{a.b.c|some-default-value}.
-    - **replaceLocal** - (String, default: '@', constraint: Must be different than any of `replace.env`) if specified enables configuration variable replacement. Expected string value e.g. `@` that will be used to replace all occurrences of `@{...}` with configuration variables. You can use default values like: @{a.b.c|some-default-value}.
+    - **parentField** - (Boolean/String, default: true) if specified enables configuration hierarchy. It's value is used to resolve parent configuration file. This field will be removed from the result. A string value overrides `__parentField` property name.
+    - **optional** - (String/Array, default: []) list of configuration paths that are optional. If any configuration path is not resolved and is not optional it's treated as empty file and no exception is raised.
+    - **basedir** - (String/Array, default: []) base directory (or directories) used for searching configuration files. Mind that `basedir` has lower priority than a configuration directory, process basedir, and absolute paths.
+    - **replaceEnv** - (Boolean/String, default: false, constraint: A string value must be different than `replaceLocal`) if specified enables environment variable replacement. Expected string value e.g. `%` that will be used to replace all occurrences of `%{...}` with environment variables. You can use default values like: %{a.b.c|some-default-value}.
+    - **replaceLocal** - (Boolean/String, default: '@', constraint: A string value must be different than `replaceEnv`) if specified enables configuration variable replacement. Expected string value e.g. `@` that will be used to replace all occurrences of `@{...}` with configuration variables. You can use default values like: @{a.b.c|some-default-value}.
+    - **override** - (Boolean/String, default: false) If specified enables configuration overriding with environmental variables like `CONFIG_<propertyName>`.
     - **skipUnresolved** - (Boolean, default: false) `true` blocks error throwing on unresolved variables.
     - **freeze** - (Boolean, default: false) `true` [freezes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze) the final config.
 
@@ -217,8 +249,9 @@ Flow of the configuration loader:
 
 1. Merge all configs passed in **path** parameter with all of their parents (merging all hierarchy)
 2. Merge all results to one json object
-3. Resolve environment variables
-4. Resolve local variables
+3. Override configuration with environment variables
+4. Resolve environment variables
+5. Resolve local variables
 
 ### Gulp commands:
 
