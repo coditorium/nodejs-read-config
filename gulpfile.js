@@ -15,8 +15,9 @@ const pkg = require('./package'),
     _ = require('lodash'),
     argv = require('minimist')(process.argv.slice(2), {
         boolean: ['debug', 'bail'],
-        string: ['file'],
+        string: ['file', 'grep'],
         alias: {
+            grep: 'g',
             file: 'f',
             debug: 'd',
             bail: 'b'
@@ -70,7 +71,8 @@ gulp.task('test', () => {
         .pipe(mocha({
             reporter: 'mocha-jenkins-reporter',
             debug: argv.debug,
-            bail: argv.bail
+            bail: argv.bail,
+            grep: argv.grep
         }))
         .on('error', (e) => {
             gutil.log('[mocha]', e.stack);
@@ -94,7 +96,8 @@ gulp.task('test-cov', (done) => {
                 .pipe(mocha({
                     reporter: 'mocha-jenkins-reporter',
                     debug: argv.debug,
-                    bail: argv.bail
+                    bail: argv.bail,
+                    grep: argv.grep
                 }))
                 .pipe(istanbul.writeReports({
                     dir: './build/test/coverage',

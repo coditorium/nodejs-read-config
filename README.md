@@ -6,136 +6,142 @@
 
 [![NPM info](https://nodei.co/npm/read-config.png?downloads=true)](https://www.npmjs.com/package/read-config)
 
-Multi format configuration loader for Node.js.
-Features:
+Multi format configuration loader with variable replacement for Node.js.
 
-- Environmental variables replacement
-- Configuration variables replacement
-- Overriding configuration properties via environmental variables
-- Variable default values
-- Hierarchical configurations
-- Supported format:
-  - [JSON5](http://json5.org/)
-  - [YAML](http://en.wikipedia.org/wiki/YAML)
-  - [Properties](http://en.wikipedia.org/wiki/.properties)
+## Installation
 
-## How to use
-
-### Environment variable replacement
-
-/tmp/config.json:
-``` javascript
-{ env1: "%{ENV_VAR1}", env2: "%{ENV_VAR2|def}" }
-```
-index.js:
-``` javascript
-var readConfig = require('read-config'),
-    config = readConfig('/tmp/config.json');
-
-console.log(config);
-
-//  $ ENV_VAR1=abc node index.js
-//  { env1: 'abc', env2: 'def' }
+```sh
+npm install --save read-config
 ```
 
-- It is possible to change `%` to any other character. Just use `replaceEnv` configuration option.
-- It is possible to use default values when environmental variable is not set.
+## Main features:
 
-### Configuration overriding with system variables
+- [Configuration variables](#configuration-variables)
+- [System variables](#system-variables)
+- [System overrides](#system-overrides)
+- [Configuration hierarchy](#configuration-hierarchy)
+- Supported formats:
+  - [JSON](#json-format)
+  - [YAML](#yaml-format)
+  - [Properties](#properties-format)
+  - [Custom](#custom-format)
 
-/tmp/config.json:
-``` javascript
-{
-    rootProp: "rootProp",
-    objProp: {
-		x: 'X'
-	}
-}
-```
-index.js:
-``` javascript
-var readConfig = require('read-config'),
-    config = readConfig('/tmp/config.json', { override: true });
+## Configuration variables
 
-console.log(config);
-
-//  $ ENV_VAR1=abc node index.js
-//  { rootProp: 'rootProp', objProp: { x: 'X'} }
-
-//  $ CONFIG_objProp_x=abc node index.js
-//  { rootProp: 'rootProp', objProp: { x: 'abc'} }
-```
-
-- It is possible to change `CONFIG` to any other character. Just use `override` configuration option.
-- It is possible to override existing value or create new one.
-
-### Configuration variable replacement
-
-/tmp/config.json:
-``` javascript
-{
-    text1: "def",
-    text2: "abc-@{text1}-ghi"
-    number1: 1,
-    number2: "@{number1}",
-    boolean1: true,
-    boolean2: "@{boolean1}",
-    null1: null,
-    null2: "@{null1}",
-	obj1: {
-		x: 'X',
-		y: '@{./x}', // same as @{obj1.x}
-		z: '@{../text1}' // same as @{text1}
-	},
-	obj2: "@{obj1}"
-}
-```
-index.js:
-``` javascript
-var readConfig = require('read-config'),
-    config = readConfig('/tmp/config.json');
-
-console.log(config);
-
-//  $ node index.js
-//  {
-//    text1: "def",
-//    text2: "abc-def-ghi"
-//    number1: 1,
-//    number2: 1,
-//    boolean1: true,
-//    boolean2: true,
-//    null1: null,
-//    null2: null,
-//    obj1: {
-//      x: 'X',
-//      y: 'X',
-//      z: 'def'
-//    },
-//    obj2: {
-//      x: 'X',
-//      y: 'X',
-//      z: 'def'
-//    }
-//  }
-```
+Use configuration values in multiple places.
 
 - It is possible to use nested paths like `@{x.y.z}`
 - It is possible to use relative paths like `@{./x}` and `@{../y}`
 - It is possible to concatenate variables like `@{x}abc@{y}def@{ghi}`
 
-### Configuration hierarchy
-
-/tmp/config-1.json:
 ``` javascript
+// File: /tmp/config.json:
+{
+  text1: 'def',
+  text2: 'abc-@{text1}-ghi',
+  number1: 1,
+  number2: '@{number1}',
+  boolean1: true,
+  boolean2: '@{boolean1}',
+  null1: null,
+  null2: '@{null1}',
+  obj1: {
+    x: 'X',
+    y: '@{./x}', // same as @{obj1.x}
+    z: '@{../text1}' // same as @{text1}
+  },
+  obj2: '@{obj1}'
+}
+
+// File: index.js:
+var readConfig = require('read-config'),
+    config = readConfig('/tmp/config.json');
+console.log(config);
+
+// Terminal:
+$ node index.js
+{
+  text1: 'def',
+  text2: 'abc-def-ghi',
+  number1: 1,
+  number2: 1,
+  boolean1: true,
+  boolean2: true,
+  null1: null,
+  null2: null,
+  obj1: {
+    x: 'X',
+    y: 'X',
+    z: 'def'
+  },
+  obj2: {
+    x: 'X',
+    y: 'X',
+    z: 'def'
+  }
+}
+```
+
+## System variables
+
+Use system variables as configuration values.
+
+- It is possible to change `%` to other character. Just use `systemVariable` configuration option.
+- It is possible to use default values when environmental variable is not set.
+
+``` javascript
+// File: /tmp/config.json
+{ env1: '%{ENV_VAR1}', env2: '%{ENV_VAR2|def}' }
+
+// File: index.js
+var readConfig = require('read-config'),
+    config = readConfig('/tmp/config.json');
+console.log(config);
+
+// Terminal:
+$ ENV_VAR1=abc node index.js
+{ env1: 'abc', env2: 'def' }
+```
+
+## System overrides
+
+Use system variables to override configuration values.
+
+- It is possible to change `CONFIG` prefix to other value. Just use `override` configuration option.
+- It is possible to override existing value or create new one.
+
+``` javascript
+// File: /tmp/config.json:
+{
+  rootProp: 'rootProp',
+  objProp: {
+    x: 'X'
+  }
+}
+
+// File: index.js:
+var readConfig = require('read-config'),
+    config = readConfig('/tmp/config.json', { override: true });
+console.log(config);
+
+// Terminal:
+$ CONFIG_objProp_x=abc node index.js
+{ rootProp: 'rootProp', objProp: { x: 'abc'} }
+```
+
+## Configuration hierarchy
+
+Build configuration hierarchy with parent definition.
+
+``` javascript
+// File: /tmp/config-1.json:
 {
     a: "a",
     b: "b",
     arr: [1, 2, 3]
 }
-```
-/tmp/config-2.json:
-``` javascript
+
+// File: /tmp/config-2.json:
 {
     __parent: "/tmp/config-1.json",
     // same as: __parent: "./config-1.json",
@@ -143,68 +149,63 @@ console.log(config);
     c: "aa",
     arr: []
 }
-```
-index.js:
-``` javascript
+
+// File: index.js:
 var readConfig = require('read-config'),
     config = readConfig('/tmp/config-2.json');
-
 console.log(config);
 
-//  $ node index.js
-//  {
-//    a: "a"
-//    b: "bb",
-//    c: "aa",
-//    arr: []
-//  }
+// Teminal:
+$ node index.js
+{
+  a: 'a',
+  b: 'bb',
+  c: 'aa',
+  arr: []
+}
 
 ```
 
-### Hierarchy and basedir
+## Multiple configuration formats
 
-/tmp/config-1.json:
-``` javascript
+### JSON format
+
+All JSON files are parsed using [JSON5](https://www.npmjs.com/package/json5) library. It means you can add comments, and skip quotes - thank you json5 ;)
+
+```javascript
 {
-    a: "a",
-    b: "b",
-    arr: [1, 2, 3]
+  // Comments allowed
+  a: 123
 }
 ```
-/home/xxx/config-2.json:
-``` javascript
-{
-    __parent: "config-1", // no directory & extension specified
-    b: "bb",
-    c: "aa",
-    arr: []
-}
-```
-index.js:
-``` javascript
-var readConfig = require('read-config'),
-    config = readConfig('/tmp/config-2.json');
 
-console.log(config);
+### YAML format
 
-//  $ node index.js
-//  {
-//    a: "a"
-//    b: "bb",
-//    c: "aa",
-//    arr: []
-//  }
-```
+All YAML files are parsed using [js-yaml](https://www.npmjs.com/package/js-yaml) library.
+Using YAML representation lookout for special characters like: `'%'` and `'@'`.
 
-### YAML config format
-
-Using YAML representation lookout for special characters like: '%' and '@'.
-
-/tmp/config.yml:
-``` javascript
+```yaml
 a: "@{LOCAL_VAR}"
 b: "%{ENV_VAR}"
 c: No quotes needed!
+```
+
+### Properties format
+
+All properties files are parsed using [properties](https://www.npmjs.com/package/properties) module.
+
+```yaml
+a: "@{LOCAL_VAR}"
+b: "%{ENV_VAR}"
+c: No
+```
+
+### Custom formats
+
+```yaml
+a: "@{LOCAL_VAR}"
+b: "%{ENV_VAR}"
+c: No
 ```
 
 ## API
@@ -215,52 +216,52 @@ c: No quotes needed!
 - **readConfig.sync(paths, [opts])** - Loads configuration file synchronously.
 - **readConfig.async(paths, [opts], callback)** - Loads configuration file asynchronously.
 
-All json files are loaded using [JSON5](https://www.npmjs.com/package/json5) library. It means you can add comments, and skip quotes in your config files - thank you json5;).
-
 ### Parameters
 
-- **paths** (String/Array) - path (or array of paths) to configuration file. If passed an array of paths than every configuration is resolved separately than merged hierarchically (like: [grand-parent-config, parent-config, child-config]).
+- **paths** (String/[String]) - path (or array of paths) to configuration file. If passed an array of paths than every configuration is resolved separately than merged hierarchically (like: [grand-parent-config, parent-config, child-config]), where `child-config` overrides `parent-config`, etc. Empty string and `null` are filtered out.
 - **opts** (Object, optional) - configuration loading options
-    - **parentField** - (Boolean/String, default: true) if specified enables configuration hierarchy. It's value is used to resolve parent configuration file. This field will be removed from the result. A string value overrides `__parentField` property name.
-    - **optional** - (String/Array, default: []) list of configuration paths that are optional. If any configuration path is not resolved and is not optional it's treated as empty file and no exception is raised.
-    - **basedir** - (String/Array, default: []) base directory (or directories) used for searching configuration files. Mind that `basedir` has lower priority than a configuration directory, process basedir, and absolute paths.
-    - **replaceEnv** - (Boolean/String, default: false, constraint: A string value must be different than `replaceLocal`) if specified enables environment variable replacement. Expected string value e.g. `%` that will be used to replace all occurrences of `%{...}` with environment variables. You can use default values like: %{a.b.c|some-default-value}.
-    - **replaceLocal** - (Boolean/String, default: '@', constraint: A string value must be different than `replaceEnv`) if specified enables configuration variable replacement. Expected string value e.g. `@` that will be used to replace all occurrences of `@{...}` with configuration variables. You can use default values like: @{a.b.c|some-default-value}.
-    - **override** - (Boolean/String, default: false) If specified enables configuration overriding with environmental variables like `CONFIG_<propertyName>`.
-    - **skipUnresolved** - (Boolean, default: false) `true` blocks error throwing on unresolved variables.
+    - **parentField** - (String, default: `'__parentField'`) if specified enables configuration hierarchy. It's value is used to resolve parent configuration file. This field will be removed from the final configuration.
+    - **fallbackDir** - (String/[String], default: `process.cwd()`) base directory used for searching configuration files. Mind that `fallbackDir` has lower priority than a configuration directory, [process.cwd()](https://nodejs.org/api/process.html#process_process_cwd), and absolute paths.
+    - **configVariable** - (String, default: `'@'`, constraint: A string value must be different than `systemVariable`) if specified enables configuration variable replacement. Defined value is used to replace all occurrences of `@{...}` with configuration variables. You can use default values like: `'@{a.b.c|some-default-value}'`.
+    - **systemVariable** - (String, default: `'%'`, constraint: A string value must be different than `configVariable`) if specified enables environment variable replacement. Defined value is used to replace all occurrences of `%{...}` with system variables. You can use default values like: `'%{a.b.c|some-default-value}'`.
+    - **systemOverride** - (String, default: `'CONFIG_'`) If specified enables configuration overriding with system variables like `CONFIG_<propertyName>`.
+    - **unresolvedVariables** - (Boolean, default: false) `true` blocks error throwing on unresolved variables.
+    - **unresolvedConfigs** - (String/[String]/Boolean, default: `false`) If any configuration file is not resolvable an exception is raised. Unless configuration is optional than unresolved files are treated as empty. If `true` is passed all unresolved paths are treated as optional.
 
 Default **opts** values:
 ``` javascript
 {
-    parentField: "__parent",
-    optional: [],
-    basedir: null,
-    replaceEnv: "%",
-    replaceLocal: "@",
-    skipUnresolved: false
+  parentField: '__parent',
+  fallbackDir: '.',
+  configVariable: '@',
+  systemVariable: '%',
+  systemOverride: 'CONFIG_',
+  unresolvedVariables: false,
+  unresolvedConfigs: false
 }
 ```
 
-## Flow
+## Details
 
-Flow of the configuration loader:
+### Configuration loader flow
 
-1. Merge all configs passed in **path** parameter with all of their parents (merging all hierarchy)
-2. Merge all results to one json object
+1. Merge all configurations passed in **path** parameter with all of their parents (merging all hierarchy)
+2. Merge all results to one JSON object
 3. Override configuration with environment variables
 4. Resolve environment variables
 5. Resolve local variables
 
 ### Gulp commands:
 
-- `gulp checkstyle` - runs jshint and jscsrc analysis
-- `gulp test` - runs tests
-- `gulp test --file test/loader.js` - runs single test file `./test/loader.js`
-- `gulp` - alias for `gulp jshint test`
-- `gulp test-cov` - runs instrumented tests, generates reports to `./build/test`
-- `gulp test-cov --file test/loader.js` - runs single instrumented test file `./test/loader.js`
+- `gulp` - alias for `gulp lint test`
 - `gulp clean` - removes `./build` folder
-- `gulp ci` - alias for `gulp clean checkstyle test-cov`
+- `gulp ci` - alias for `gulp clean lint test-cov`
+- `gulp lint` - run source code linter
+- `gulp test-cov` - runs instrumented tests, generates reports to `./build/test`. Accepts all parameters from `test` task.
+- `gulp test` - run tests
+    - `gulp test --file test/loader.js` - run single test file `./test/loader.js`
+    - `gulp test --bail` - run test until first error
+    - `gulp test --grep "should parse yaml"` - run test that have defines value in description
 
 ### NPM commands:
 
