@@ -112,39 +112,6 @@ function cases(name, loadConfig) {
 			});
 		});
 
-		describe('freezing', function() {
-			var config = absolute('configs/config-simple.json'),
-				modify = function(config) {
-					return function() {
-						config.x = 999;
-					};
-				};
-
-			it('should be enabled by parameter', function(done) {
-				loadConfig(config, { freeze: true }, function(err, config) {
-					expect(err).to.not.exist;
-					expect(modify(config)).to.throw();
-					done();
-				});
-			});
-
-			it('should be disabled by parameter', function(done) {
-				loadConfig(config, { freeze: false }, function(err, config) {
-					expect(err).to.not.exist;
-					expect(modify(config)).to.not.throw();
-					done();
-				});
-			});
-
-			it('should be disabled by default', function(done) {
-				loadConfig(config, function(err, config) {
-					expect(err).to.not.exist;
-					expect(modify(config)).to.not.throw();
-					done();
-				});
-			});
-		});
-
 		describe('skipping unresolved variables', function() {
 			var config = absolute('configs/config-simple-var.json');
 
