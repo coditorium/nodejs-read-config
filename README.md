@@ -24,7 +24,6 @@ npm install --save read-config
   - [JSON](#json-format)
   - [YAML](#yaml-format)
   - [Properties](#properties-format)
-  - [Custom](#custom-format)
 
 ## Configuration variables
 
@@ -86,7 +85,7 @@ $ node index.js
 
 Use system variables as configuration values.
 
-- It is possible to change `%` to other character. Just use `systemVariable` configuration option.
+- It is possible to change `%` to other character. Just use `systemVars` configuration option.
 - It is possible to use default values when environmental variable is not set.
 
 ``` javascript
@@ -107,7 +106,7 @@ $ ENV_VAR1=abc node index.js
 
 Use system variables to override configuration values.
 
-- It is possible to change `CONFIG` prefix to other value. Just use `override` configuration option.
+- It is possible to change `CONFIG` prefix to other value. Just use `systemOverrides` configuration option.
 - It is possible to override existing value or create new one.
 
 ``` javascript
@@ -121,7 +120,9 @@ Use system variables to override configuration values.
 
 // File: index.js:
 var readConfig = require('read-config'),
-    config = readConfig('/tmp/config.json', { override: true });
+    config = readConfig('/tmp/config.json', {
+        systemOverrides: true
+    });
 console.log(config);
 
 // Terminal:
@@ -172,72 +173,45 @@ $ node index.js
 
 All JSON files are parsed using [JSON5](https://www.npmjs.com/package/json5) library. It means you can add comments, and skip quotes - thank you json5 ;)
 
-```javascript
-{
-  // Comments allowed
-  a: 123
-}
-```
-
 ### YAML format
 
 All YAML files are parsed using [js-yaml](https://www.npmjs.com/package/js-yaml) library.
 Using YAML representation lookout for special characters like: `'%'` and `'@'`.
 
-```yaml
-a: "@{LOCAL_VAR}"
-b: "%{ENV_VAR}"
-c: No quotes needed!
-```
-
 ### Properties format
 
 All properties files are parsed using [properties](https://www.npmjs.com/package/properties) module.
-
-```yaml
-a: "@{LOCAL_VAR}"
-b: "%{ENV_VAR}"
-c: No
-```
-
-### Custom formats
-
-```yaml
-a: "@{LOCAL_VAR}"
-b: "%{ENV_VAR}"
-c: No
-```
 
 ## API
 
 ### Functions
 
-- **readConfig(paths, [opts])** - Alias for `readConfig.sync(paths, [opts])`.
-- **readConfig.sync(paths, [opts])** - Loads configuration file synchronously.
-- **readConfig.async(paths, [opts], callback)** - Loads configuration file asynchronously.
+- **readConfig(paths, [opts], [callback])** - Loads configuration. If callback is passed operation is asynchronous.
 
 ### Parameters
 
 - **paths** (String/[String]) - path (or array of paths) to configuration file. If passed an array of paths than every configuration is resolved separately than merged hierarchically (like: [grand-parent-config, parent-config, child-config]), where `child-config` overrides `parent-config`, etc. Empty string and `null` are filtered out.
 - **opts** (Object, optional) - configuration loading options
     - **parentField** - (String, default: `'__parentField'`) if specified enables configuration hierarchy. It's value is used to resolve parent configuration file. This field will be removed from the final configuration.
-    - **fallbackDir** - (String/[String], default: `process.cwd()`) base directory used for searching configuration files. Mind that `fallbackDir` has lower priority than a configuration directory, [process.cwd()](https://nodejs.org/api/process.html#process_process_cwd), and absolute paths.
-    - **configVariable** - (String, default: `'@'`, constraint: A string value must be different than `systemVariable`) if specified enables configuration variable replacement. Defined value is used to replace all occurrences of `@{...}` with configuration variables. You can use default values like: `'@{a.b.c|some-default-value}'`.
-    - **systemVariable** - (String, default: `'%'`, constraint: A string value must be different than `configVariable`) if specified enables environment variable replacement. Defined value is used to replace all occurrences of `%{...}` with system variables. You can use default values like: `'%{a.b.c|some-default-value}'`.
-    - **systemOverride** - (String, default: `'CONFIG_'`) If specified enables configuration overriding with system variables like `CONFIG_<propertyName>`.
-    - **unresolvedVariables** - (Boolean, default: false) `true` blocks error throwing on unresolved variables.
-    - **unresolvedConfigs** - (String/[String]/Boolean, default: `false`) If any configuration file is not resolvable an exception is raised. Unless configuration is optional than unresolved files are treated as empty. If `true` is passed all unresolved paths are treated as optional.
+    - **cwd** - (String/[String], default: [`process.cwd()`](https://nodejs.org/api/process.html#process_process_cwd)) base directory used for searching configuration files. Mind that `cwd` has lower priority than a configuration directory, and absolute paths.
+    - **extensions** - ([String], default: `['json', 'json5', 'yml', 'yaml', 'properties']`) Configuration paths do not need to include file extensions. They can be resolved using `extensions` array. All default extensions are mapped to parsers automatically. In order to handle custom extension add an object: `{ '${ext}': '${parser}' }`. Available parsers: `['jsonParser', 'yamlParser', 'propertiesParser']`.
+    - **configVars** - (String, default: `'@'`, constraint: must be different than `systemVariable`) if specified enables configuration variable replacement. Defined value is used to replace all occurrences of `@{...}` with configuration variables. You can use default values like: `'@{a.b.c|some-default-value}'`.
+    - **systemVars** - (String, default: `'%'`, constraint: must be different than `configVariable`) if specified enables system variable replacement. Defined value is used to replace all occurrences of `%{...}` with system variables. You can use default values like: `'%{a.b.c|some-default-value}'`.
+    - **systemOverrides** - (String, default: `'CONFIG_'`) If specified enables configuration overriding with system variables like `CONFIG_<propertyName>`.
+    - **unresolvedVars** - (Boolean, default: `false`) `true` blocks error throwing on unresolved variables.
+    - **unresolvedConfigs** - (String/[String]/RegEx/[RegEx]/Boolean, default: `false`) If any configuration file is not resolvable an exception is raised. Unless configuration is optional than unresolved files are treated as empty. If `true` is passed all unresolved paths are treated as optional.
 
 Default **opts** values:
 ``` javascript
 {
   parentField: '__parent',
-  fallbackDir: '.',
+  cwd: [`process.cwd()`](https://nodejs.org/api/process.html#process_process_cwd),
+  extensionOrder: ['json', 'json5', 'yml', 'yaml', 'properties']
   configVariable: '@',
   systemVariable: '%',
-  systemOverride: 'CONFIG_',
+  systemOverrides: 'CONFIG_',
   unresolvedVariables: false,
-  unresolvedConfigs: false
+  unresolvedConfigs: false,
 }
 ```
 

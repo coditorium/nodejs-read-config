@@ -172,13 +172,13 @@ describe(`${libmodule} test:`, () => {
 
     it('should not replace variable', () => {
         const input = { x: '%{y}' },
-            replaced = replaceVariables(input, {}, { skipUnresolved: true });
+            replaced = replaceVariables(input, {}, { unresolvedVars: true });
         expect(replaced).to.be.eql({ x: 'NOTFOUND: y' });
     });
 
     it('should not replace variable with undefined', () => {
         const input = { x: '%{y}' },
-            replaced = replaceVariables(input, { y: undefined }, { skipUnresolved: true });
+            replaced = replaceVariables(input, { y: undefined }, { unresolvedVars: true });
         expect(replaced).to.be.eql({ x: 'NOTFOUND: y' });
     });
 
@@ -200,15 +200,15 @@ describe(`${libmodule} test:`, () => {
         }).to.throw('Unresolved configuration variable: x');
     });
 
-    it('should throw error on unresolved variable by \'skipUnresolved\' parameter', () => {
+    it('should throw error on unresolved variable by \'unresolvedVars\' parameter', () => {
         expect(() => {
-            replaceVariables({ y: '%{x}' }, { }, { skipUnresolved: false });
+            replaceVariables({ y: '%{x}' }, { }, { unresolvedVars: false });
         }).to.throw('Unresolved configuration variable: x');
     });
 
     it('should not throw error on unresolved variable', () => {
         expect(() => {
-            replaceVariables({ y: '%{x}' }, { }, { skipUnresolved: true });
+            replaceVariables({ y: '%{x}' }, { }, { unresolvedVars: true });
         }).to.not.throw();
     });
 

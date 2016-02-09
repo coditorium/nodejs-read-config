@@ -33,7 +33,7 @@ function cases(name, loadConfig) {
         describe('should throw error on', () => {
 
             it('basedir not found', (done) => {
-                loadConfig('xxx', { basedir: absolute('xxx') }, (err) => {
+                loadConfig('xxx', { cwd: absolute('xxx') }, (err) => {
                     expect(err).to.exist;
                     done();
                 });
@@ -69,10 +69,11 @@ function cases(name, loadConfig) {
                 absolute('configs/config-a2.json'),
                 '../subfolder/config-b3.json'
             ], {
-                basedir: absolute('configs/basedir')
+                cwd: absolute('configs/basedir'),
+                systemOverrides: true
             }, (err, config) => {
                 delete process.env['CONFIG_LOADER_TEST_VAR_B'];
-                expect(err).to.not.exist;
+                if (err) return done(err);
                 expect(config).to.exist;
                 expect(config).to.be.eql({
                     'default': true,
@@ -96,10 +97,10 @@ function cases(name, loadConfig) {
                 absolute('configs/other/config-default.yaml'),
                 absolute('configs/config-simple.json')
             ], {
-                basedir: absolute('configs/basedir')
+                cwd: absolute('configs/basedir')
             }, (err, config) => {
                 delete process.env['CONFIG_LOADER_TEST_VAR_DEF'];
-                expect(err).to.not.exist;
+                if (err) return done(err);
                 expect(config).to.exist;
                 expect(config).to.be.eql({
                     'default': true,
@@ -115,15 +116,15 @@ function cases(name, loadConfig) {
             const config = absolute('configs/config-simple-var.json');
 
             it('should be enabled by parameter', (done) => {
-                loadConfig(config, { skipUnresolved: true }, (err, config) => {
-                    expect(err).to.not.exist;
+                loadConfig(config, { unresolvedVars: true }, (err, config) => {
+                    if (err) return done(err);
                     expect(config).to.exist;
                     done();
                 });
             });
 
             it('should be disabled by parameter', (done) => {
-                loadConfig(config, { skipUnresolved: false }, (err, config) => {
+                loadConfig(config, { unresolvedVars: false }, (err, config) => {
                     expect(err).to.exist;
                     expect(config).to.not.exist;
                     done();
@@ -134,6 +135,42 @@ function cases(name, loadConfig) {
                 loadConfig(config, (err, config) => {
                     expect(err).to.exist;
                     expect(config).to.not.exist;
+                    done();
+                });
+            });
+        });
+
+        describe('skipping empty paths', () => {
+
+            it('should skip null value in paths', (done) => {
+                loadConfig([
+                    absolute('configs/config-simple-var.json'),
+                    null
+                ], { unresolvedVars: true }, (err, config) => {
+                    if (err) return done(err);
+                    expect(config).to.exist;
+                    done();
+                });
+            });
+
+            it('should skip an empty string value in paths', (done) => {
+                loadConfig([
+                    absolute('configs/config-simple-var.json'),
+                    ''
+                ], { unresolvedVars: true }, (err, config) => {
+                    if (err) return done(err);
+                    expect(config).to.exist;
+                    done();
+                });
+            });
+
+            it('should skip \'false\' boolean value in paths', (done) => {
+                loadConfig([
+                    absolute('configs/config-simple-var.json'),
+                    false
+                ], { unresolvedVars: true }, (err, config) => {
+                    if (err) return done(err);
+                    expect(config).to.exist;
                     done();
                 });
             });

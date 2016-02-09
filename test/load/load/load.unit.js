@@ -28,7 +28,7 @@ function cases(name, load) {
 
         it('should load config file by absolute filepath', (done) => {
             load(absolute('configs/config1'), (err, config) => {
-                expect(err).to.not.exist;
+                if (err) return done(err);
                 expect(config).to.exist;
                 expect(config).to.be.eql({
                     a: 1,
@@ -39,8 +39,8 @@ function cases(name, load) {
         });
 
         it('should load config file by relative filepath', (done) => {
-            load('configs/config1', { basedir: __dirname }, (err, config) => {
-                expect(err).to.not.exist;
+            load('configs/config1', { cwd: __dirname }, (err, config) => {
+                if (err) return done(err);
                 expect(config).to.exist;
                 expect(config).to.be.eql({
                     a: 1,
@@ -52,10 +52,10 @@ function cases(name, load) {
 
         it('should load and merge 2 config files with parents', (done) => {
             load(['config2', 'config4'], {
-                basedir: absolute('configs'),
+                cwd: absolute('configs'),
                 parentField: '__parent'
             }, (err, config) => {
-                expect(err).to.not.exist;
+                if (err) return done(err);
                 expect(config).to.exist;
                 expect(config).to.be.eql({
                     a: 1,
@@ -70,7 +70,7 @@ function cases(name, load) {
 
         it('should load config file relative to child configuration file', (done) => {
             load(absolute('configs/config2'), { parentField: '__parent' }, (err, config) => {
-                expect(err).to.not.exist;
+                if (err) return done(err);
                 expect(config).to.exist;
                 expect(config).to.be.eql({
                     a: 1,
@@ -83,7 +83,7 @@ function cases(name, load) {
 
         it('should load config file relative to process CWD', (done) => {
             load(absolute('configs/config5'), { parentField: '__parent' }, (err, config) => {
-                expect(err).to.not.exist;
+                if (err) return done(err);
                 expect(config).to.exist;
                 expect(config).to.be.eql({
                     a: 1,

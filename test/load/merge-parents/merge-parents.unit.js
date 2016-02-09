@@ -28,7 +28,7 @@ function cases(name, mergeParents) {
 
         it('should load simple config file - no parents', (done) => {
             mergeParents(config1, (err, config) => {
-                expect(err).to.not.exist;
+                if (err) return done(err);
                 expect(config).to.be.eql({
                     a: 1,
                     b: 2
@@ -39,7 +39,7 @@ function cases(name, mergeParents) {
 
         it('should load config file - one parent', (done) => {
             mergeParents(config2, { parentField: '__parent' }, (err, config) => {
-                expect(err).to.not.exist;
+                if (err) return done(err);
                 expect(config).to.be.eql({
                     a: 1,
                     b: 22,
@@ -51,7 +51,7 @@ function cases(name, mergeParents) {
 
         it('should load config file from subfolder - two parents', (done) => {
             mergeParents(config3, { parentField: '__parent' }, (err, config) => {
-                expect(err).to.not.exist;
+                if (err) return done(err);
                 expect(config).to.be.eql({
                     a: 1,
                     b: 22,
@@ -65,10 +65,10 @@ function cases(name, mergeParents) {
         it('should load config file with a parent from basedir', (done) => {
             const opts = {
                 parentField: '__parent',
-                basedir: path.resolve(__dirname, 'configs', 'basedir')
+                cwd: path.resolve(__dirname, 'configs', 'basedir')
             };
             mergeParents(config4, opts, (err, config) => {
-                expect(err).to.not.exist;
+                if (err) return done(err);
                 expect(config).to.be.eql({
                     a: 1,
                     b: 22,
@@ -82,7 +82,7 @@ function cases(name, mergeParents) {
             const configPath = path.resolve(__dirname, 'configs', 'config-error.json'),
                 opts = {
                     parentField: '__parent',
-                    basedir: path.resolve(__dirname, 'configs', 'basedir')
+                    cwd: path.resolve(__dirname, 'configs', 'basedir')
                 };
             mergeParents(configPath, opts, (err) => {
                 expect(err).to.exist;
@@ -96,10 +96,10 @@ function cases(name, mergeParents) {
                 opts = {
                     parentField: '__parent',
                     optional: 'xxx',
-                    basedir: path.resolve(__dirname, 'configs', 'basedir')
+                    cwd: path.resolve(__dirname, 'configs', 'basedir')
                 };
             mergeParents(configPath, opts, (err, config) => {
-                expect(err).to.not.exist;
+                if (err) return done(err);
                 expect(config).to.be.eql({
                     b: 22,
                     c: 33
@@ -113,10 +113,10 @@ function cases(name, mergeParents) {
                 opts = {
                     parentField: '__parent',
                     optional: '*',
-                    basedir: path.resolve(__dirname, 'configs', 'basedir')
+                    cwd: path.resolve(__dirname, 'configs', 'basedir')
                 };
             mergeParents(configPath, opts, (err, config) => {
-                expect(err).to.not.exist;
+                if (err) return done(err);
                 expect(config).to.be.eql({
                     b: 22,
                     c: 33
@@ -130,10 +130,10 @@ function cases(name, mergeParents) {
                 opts = {
                     parentField: '__parent',
                     optional: ['xxx'],
-                    basedir: path.resolve(__dirname, 'configs', 'basedir')
+                    cwd: path.resolve(__dirname, 'configs', 'basedir')
                 };
             mergeParents(configPath, opts, (err, config) => {
-                expect(err).to.not.exist;
+                if (err) return done(err);
                 expect(config).to.eql({
                     b: 22,
                     c: 33
@@ -147,10 +147,10 @@ function cases(name, mergeParents) {
                 opts = {
                     parentField: '__parent',
                     optional: [configPath],
-                    basedir: path.resolve(__dirname, 'configs', 'basedir')
+                    cwd: path.resolve(__dirname, 'configs', 'basedir')
                 };
             mergeParents(configPath, opts, (err, config) => {
-                expect(err).to.not.exist;
+                if (err) return done(err);
                 expect(config).to.be.eql({});
                 done();
             });

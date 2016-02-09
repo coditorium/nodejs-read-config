@@ -4,9 +4,9 @@ const libmodule = 'resolve/index',
     resolve = requireLib(libmodule),
     expect = require('chai').expect,
     opts = {
-        replaceEnv: '%',
-        replaceLocal: '@',
-        override: 'CONFIGTEST'
+        configVars: '@',
+        systemVars: '%',
+        systemOverrides: 'CONFIGTEST'
     };
 
 describe(`${libmodule} test:`, () => {
@@ -114,7 +114,7 @@ describe(`${libmodule} test:`, () => {
             resolve({ y: '%{x}' }, {
                 replace: {
                     env: '%',
-                    skipUnresolved: true
+                    unresolvedVars: true
                 }
             });
         }).to.not.throw();

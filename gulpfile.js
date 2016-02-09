@@ -75,7 +75,7 @@ gulp.task('test', () => {
             grep: argv.grep
         }))
         .on('error', (e) => {
-            gutil.log('[mocha]', e.stack);
+            gutil.log('[mocha]', e.stack || e.message);
         });
 });
 
@@ -105,7 +105,7 @@ gulp.task('test-cov', (done) => {
                     reportOpts: { dir: './build/test/coverage' }
                 }))
                 .on('error', (e) => {
-                    gutil.log('[mocha]', e.stack);
+                    gutil.log('[mocha]', e.stack || e.message);
                 })
                 .on('end', done);
         });
