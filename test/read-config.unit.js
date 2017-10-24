@@ -106,7 +106,6 @@ function cases(name, loadConfig) {
                     'default2': true,
                     'a': 1,
                     'env-var': 'config-loader-test-var-def',
-                    'docker-secret': 'docker-secret-file-example'
                 });
                 done();
             });
