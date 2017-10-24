@@ -245,7 +245,8 @@ All json files are loaded using [JSON5](https://www.npmjs.com/package/json5) lib
     - **optional** - (String/Array, default: []) list of configuration paths that are optional. If any configuration path is not resolved and is not optional it's treated as empty file and no exception is raised.
     - **basedir** - (String/Array, default: []) base directory (or directories) used for searching configuration files. Mind that `basedir` has lower priority than a configuration directory, process basedir, and absolute paths.
     - **replaceEnv** - (Boolean/String, default: false, constraint: A string value must be different than `replaceLocal`) if specified enables environment variable replacement. Expected string value e.g. `%` that will be used to replace all occurrences of `%{...}` with environment variables. You can use default values like: %{a.b.c|some-default-value}.
-    - **replaceLocal** - (Boolean/String, default: '@', constraint: A string value must be different than `replaceEnv`) if specified enables configuration variable replacement. Expected string value e.g. `@` that will be used to replace all occurrences of `@{...}` with configuration variables. You can use default values like: @{a.b.c|some-default-value}.
+    - **replaceDockerSecret** - (Boolean/String, default: false, constraint: A string value must be different than `replaceLocal` and `replaceEnv`) if specified enables docker secret file replacement. Expected string value e.g. `#` that will be used to replace all occurrences of `#{...}` with docker secret file content. You can use default values like: #{DOCKER_SECRET|some-default-value}.
+    - **replaceLocal** - (Boolean/String, default: '@', constraint: A string value must be different than `replaceEnv` and `replaceDockerSecret`) if specified enables configuration variable replacement. Expected string value e.g. `@` that will be used to replace all occurrences of `@{...}` with configuration variables. You can use default values like: @{a.b.c|some-default-value}.
     - **override** - (Boolean/String, default: false) If specified enables configuration overriding with environmental variables like `CONFIG_<propertyName>`.
     - **skipUnresolved** - (Boolean, default: false) `true` blocks error throwing on unresolved variables.
 
@@ -257,6 +258,7 @@ Default **opts** values:
     basedir: null,
     replaceEnv: "%",
     replaceLocal: "@",
+    replaceDockerSecret: "#",
     skipUnresolved: false
 }
 ```
