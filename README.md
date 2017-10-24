@@ -58,8 +58,8 @@ console.log(config);
 //  { docks1: 'abc', env2: 'def' }
 ```
 
-- It is possible to change `%` to any other character. Just use `replaceEnv` configuration option.
-- It is possible to use default values when environmental variable is not set.
+- It is possible to change `#` to any other character. Just use `replaceDockerSecret` configuration option.
+- It is possible to use default values when docker secret is not present.
 
 ### Configuration overriding with system variables
 
