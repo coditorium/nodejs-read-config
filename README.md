@@ -41,6 +41,26 @@ console.log(config);
 - It is possible to change `%` to any other character. Just use `replaceEnv` configuration option.
 - It is possible to use default values when environmental variable is not set.
 
+### Docker secret replacement
+
+/tmp/config.json:
+``` javascript
+{ docks1: "%{DOCKER_SECRET1}", docks2: "%{DOCKER_SECRET2|def}" }
+```
+index.js:
+``` javascript
+var readConfig = require('read-config'),
+    config = readConfig('/tmp/config.json');
+
+console.log(config);
+// If secret file content DOCKER_SECRET1 is 'abc' and DOCKER_SECRET2 is not defined
+//  $ node index.js
+//  { docks1: 'abc', env2: 'def' }
+```
+
+- It is possible to change `%` to any other character. Just use `replaceEnv` configuration option.
+- It is possible to use default values when environmental variable is not set.
+
 ### Configuration overriding with system variables
 
 /tmp/config.json:
