@@ -105,7 +105,7 @@ function cases(name, loadConfig) {
                     'default': true,
                     'default2': true,
                     'a': 1,
-                    'env-var': 'config-loader-test-var-def',
+                    'env-var': 'config-loader-test-var-def'
                 });
                 done();
             });
