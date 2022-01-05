@@ -1,13 +1,14 @@
 'use strict';
 
-const libmodule = 'resolve/deep',
+const requireLib = require('requirelib'),
+    libmodule = 'resolve/deep',
     deep = requireLib(libmodule),
     expect = require('chai').expect;
 
 describe(`${libmodule} test:`, () => {
 
     function shouldPick(obj, prop, result) {
-        it(`should pick proprty: \'${prop}\' from ${JSON.stringify(obj)}`, () => {
+        it(`should pick proprty: '${prop}' from ${JSON.stringify(obj)}`, () => {
             const picked = deep.pick(obj, prop);
             expect(picked).to.exist;
             expect(picked).to.be.eql({
@@ -20,7 +21,7 @@ describe(`${libmodule} test:`, () => {
     }
 
     function shouldNotPick(obj, prop) {
-        it(`should not pick proprty: \'${prop}\' from ${JSON.stringify(obj)}`, () => {
+        it(`should not pick proprty: '${prop}' from ${JSON.stringify(obj)}`, () => {
             const picked = deep.pick(obj, prop);
             expect(picked).to.not.exist;
         });
@@ -41,10 +42,9 @@ describe(`${libmodule} test:`, () => {
     shouldNotPick({ arr: ['a', 'b', 'c'] }, 'arr.10');
 
     function shouldPut(obj, prop, value, result) {
-        it(`should put proprty: \'${prop}\' from ${JSON.stringify(obj)}`, () => {
-            let picked;
+        it(`should put proprty: '${prop}' from ${JSON.stringify(obj)}`, () => {
             deep.put(obj, prop, value);
-            picked = deep.pick(obj, prop);
+            const picked = deep.pick(obj, prop);
             expect(picked).to.exist;
             expect(picked).to.be.eql({
                 prop: result.prop,

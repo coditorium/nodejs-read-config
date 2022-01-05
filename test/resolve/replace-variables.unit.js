@@ -1,6 +1,7 @@
 'use strict';
 
-const libmodule = 'resolve/replace-variables',
+const requireLib = require('requirelib'),
+    libmodule = 'resolve/replace-variables',
     replaceVariables = requireLib(libmodule).bind(null, '%'),
     expect = require('chai').expect;
 
@@ -57,7 +58,7 @@ describe(`${libmodule} test:`, () => {
         });
 
         it('with object default as string', () => {
-            const input = { x: '%{y|{ \"a\": 2 }}' },
+            const input = { x: '%{y|{ "a": 2 }}' },
                 replaced = replaceVariables(input, { y: { a: 2 } });
             expect(replaced).to.be.eql({ x: '{"a":2}}' });
         });
@@ -111,13 +112,13 @@ describe(`${libmodule} test:`, () => {
         it('with object', () => {
             const input = { x: 'X%{y}X' },
                 replaced = replaceVariables(input, { y: { a: 2 } });
-            expect(replaced).to.be.eql({ x: 'X{\"a\":2}X' });
+            expect(replaced).to.be.eql({ x: 'X{"a":2}X' });
         });
 
         it('with object default', () => {
             const input = { x: 'X%{y|{"a":2}}X' },
                 replaced = replaceVariables(input, {});
-            expect(replaced).to.be.eql({ x: 'X{\"a\":2}X' });
+            expect(replaced).to.be.eql({ x: 'X{"a":2}X' });
         });
 
         it('with null', () => {

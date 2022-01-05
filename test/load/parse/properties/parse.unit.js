@@ -1,6 +1,7 @@
 'use strict';
 
-const expect = require('chai').expect,
+const requireLib = require('requirelib'),
+    expect = require('chai').expect,
     properties = requireLib('load/parse/properties');
 
 describe('properties.parse module test:', () => {

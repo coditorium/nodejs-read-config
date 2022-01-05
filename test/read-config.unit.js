@@ -1,6 +1,7 @@
 'use strict';
 
-const libmodule = '../index',
+const requireLib = require('requirelib'),
+    libmodule = '../index',
     loadConfig = requireLib(libmodule),
     path = require('path'),
     expect = require('chai').expect;
