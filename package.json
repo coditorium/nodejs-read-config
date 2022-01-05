@@ -1,16 +1,16 @@
 {
-  "author": "Paweł Mendelski <pawel.mendelski@coditorium.com>",
-  "name": "read-config",
-  "version": "2.1.0",
+  "author": "Jesús Segnini <jesus.eduardo.segnini@gmail.com>",
+  "name": "read-config-plus",
+  "version": "2.2.0",
   "description": "Multi format configuration loader",
   "main": "index.js",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/coditorium/nodejs-read-config.git"
+    "url": "https://github.com/segnini75/nodejs-read-config.git"
   },
   "bugs": {
-    "url": "https://github.com/coditorium/nodejs-read-config/issues"
+    "url": "https://github.com/segnini75/nodejs-read-config/issues"
   },
   "scripts": {
     "test": "gulp lint test",
