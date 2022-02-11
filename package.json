@@ -1,16 +1,16 @@
 {
-  "author": "Paweł Mendelski <pawel.mendelski@coditorium.com>",
-  "name": "read-config",
-  "version": "2.0.0",
+  "author": "Jesús Segnini <segnini75@gmail.com>",
+  "name": "read-config-plus",
+  "version": "2.2.0",
   "description": "Multi format configuration loader",
   "main": "index.js",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/coditorium/nodejs-read-config.git"
+    "url": "https://github.com/segnini75/nodejs-read-config.git"
   },
   "bugs": {
-    "url": "https://github.com/coditorium/nodejs-read-config/issues"
+    "url": "https://github.com/segnini75/nodejs-read-config/issues"
   },
   "scripts": {
     "test": "gulp lint test",
@@ -25,27 +25,28 @@
     "properties"
   ],
   "dependencies": {
-    "lodash": "^4.2.1",
     "async": "~1.5.2",
+    "js-yaml": "4.1.0",
     "json5": "~0.4.0",
-    "js-yaml": "~3.5.2",
-    "properties": "~1.2.1"
+    "lodash": "^4.2.1",
+    "properties": "~1.2.1",
+    "requirelib": "^0.0.2"
   },
   "devDependencies": {
     "chai": "^3.5.0",
-    "coveralls": "~2.11.6",
+    "coveralls": "^3.1.1",
     "del": "^2.2.0",
-    "gulp": "~3.9.0",
-    "gulp-eslint": "^1.1.1",
+    "gulp": "^4.0.2",
+    "gulp-eslint": "^6.0.0",
     "gulp-if": "^2.0.0",
-    "gulp-istanbul": "~0.10.3",
-    "gulp-mocha": "~2.2.0",
+    "gulp-istanbul": "^1.1.3",
+    "gulp-mocha": "^8.0.0",
     "gulp-sync": "~0.1.4",
-    "gulp-util": "~3.0.7",
+    "gulp-util": "^1.0.0",
     "minimist": "^1.2.0",
-    "mkdirp": "~0.5.1",
-    "mocha": "2.4.5",
-    "mocha-jenkins-reporter": "~0.1.9"
+    "mkdirp": "1.0.4",
+    "mocha": "^9.1.3",
+    "mocha-jenkins-reporter": "^0.4.7"
   },
   "engines": {
     "node": ">=5"

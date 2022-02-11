@@ -24,11 +24,15 @@ const pkg = require('./package'),
     });
 
 // Print banner
-gutil.log([
-    fs.readFileSync('.banner', 'utf8'),
-    `${pkg.name} v${pkg.version}`,
-    pkg.description
-].map(_.unary(gutil.colors.green)).join('\n'));
+gutil.log(
+    [
+        fs.readFileSync('.banner', 'utf8'),
+        `${pkg.name} v${pkg.version}`,
+        pkg.description
+    ]
+        .map(_.unary(gutil.colors.green))
+        .join('\n')
+);
 
 argv.debug && gutil.log('Paremeters:', argv);
 
@@ -43,19 +47,18 @@ function initTestMode() {
 
 gulp.task('clean', (done) => {
     del(['build']).then((paths) => {
-        argv.debug && paths.length && gutil.log('Deleted files/folders:\n', paths.join('\n'));
+        argv.debug &&
+            paths.length &&
+            gutil.log('Deleted files/folders:\n', paths.join('\n'));
         done();
     });
 });
 
 gulp.task('lint', () => {
-    const src = argv.file || [
-        '**/*.js',
-        '!node_modules/**/*',
-        '!build/**/*'
-    ];
+    const src = argv.file || ['**/*.js', '!node_modules/**/*', '!build/**/*'];
     argv.debug && gutil.log('Running code lint on:', src);
-    return gulp.src(src)
+    return gulp
+        .src(src)
         .pipe(eslint())
         .pipe(gulpif(!argv.bail, eslint.format()))
         .pipe(gulpif(!argv.bail, eslint.failAfterError()))
@@ -66,12 +69,15 @@ gulp.task('test', () => {
     const testSrc = argv.file || 'test/**/*.unit.js';
     argv.debug && gutil.log('Running unit tests for:', testSrc);
     initTestMode();
-    return gulp.src(testSrc)
-        .pipe(mocha({
-            reporter: 'mocha-jenkins-reporter',
-            debug: argv.debug,
-            bail: argv.bail
-        }))
+    return gulp
+        .src(testSrc)
+        .pipe(
+            mocha({
+                reporter: 'mocha-jenkins-reporter',
+                debug: argv.debug,
+                bail: argv.bail
+            })
+        )
         .on('error', (e) => {
             gutil.log('[mocha]', e.stack);
         });
@@ -82,25 +88,38 @@ gulp.task('test-cov', (done) => {
     mkdirp.sync('./build/test/coverage');
     global.testMode = 'unit';
     gulp.src('lib/**/*.js')
-        .pipe(istanbul({
-            includeUntested: true
-        }))
+        .pipe(
+            istanbul({
+                includeUntested: true
+            })
+        )
         .pipe(istanbul.hookRequire())
         .on('finish', () => {
             const testSrc = argv.file || 'test/**/*.unit.js';
             initTestMode();
-            argv.debug && gutil.log('Running instrumented unit tests for:', testSrc);
+            argv.debug &&
+                gutil.log('Running instrumented unit tests for:', testSrc);
             gulp.src(testSrc)
-                .pipe(mocha({
-                    reporter: 'mocha-jenkins-reporter',
-                    debug: argv.debug,
-                    bail: argv.bail
-                }))
-                .pipe(istanbul.writeReports({
-                    dir: './build/test/coverage',
-                    reporters: ['lcov', 'json', 'text', 'text-summary', 'cobertura'],
-                    reportOpts: { dir: './build/test/coverage' }
-                }))
+                .pipe(
+                    mocha({
+                        reporter: 'mocha-jenkins-reporter',
+                        debug: argv.debug,
+                        bail: argv.bail
+                    })
+                )
+                .pipe(
+                    istanbul.writeReports({
+                        dir: './build/test/coverage',
+                        reporters: [
+                            'lcov',
+                            'json',
+                            'text',
+                            'text-summary',
+                            'cobertura'
+                        ],
+                        reportOpts: { dir: './build/test/coverage' }
+                    })
+                )
                 .on('error', (e) => {
                     gutil.log('[mocha]', e.stack);
                 })
@@ -108,5 +127,9 @@ gulp.task('test-cov', (done) => {
         });
 });
 
-gulp.task('default', sync(['clean', 'lint', 'test']));
-gulp.task('ci', sync(['clean', 'lint', 'test-cov']));
+gulp.task('default', () => {
+    sync(['clean', 'lint', 'test']);
+});
+gulp.task('ci', () => {
+    sync(['clean', 'lint', 'test-cov']);
+});

@@ -1,6 +1,7 @@
 'use strict';
 
-const libmodule = 'load/resolve-path',
+const requireLib = require('requirelib'),
+    libmodule = 'load/resolve-path',
     resolvePath = requireLib(libmodule),
     path = require('path'),
     expect = require('chai').expect;

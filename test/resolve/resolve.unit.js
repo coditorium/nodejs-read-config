@@ -1,6 +1,7 @@
 'use strict';
 
-const libmodule = 'resolve/index',
+const requireLib = require('requirelib'),
+    libmodule = 'resolve/index',
     resolve = requireLib(libmodule),
     expect = require('chai').expect,
     opts = {

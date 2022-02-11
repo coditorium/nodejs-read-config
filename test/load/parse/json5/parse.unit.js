@@ -1,6 +1,7 @@
 'use strict';
 
-const expect = require('chai').expect,
+const requireLib = require('requirelib'),
+    expect = require('chai').expect,
     json5 = requireLib('load/parse/json5');
 
 describe('Json5.parse module test:', () => {
